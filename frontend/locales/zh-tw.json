@@ -1,0 +1,24 @@
+{
+  "header": {
+    "home": "Home",
+    "bike-stations": "共享單車站",
+    "water-fountains": "飲水站",
+    "support": "支援中心",
+    "signin/up": "登入/註冊"
+  },
+  "devices": {
+    "bike-station": "共享單車站",
+    "water-fountain": "飲水站"
+  },
+  "search": "搜尋",
+  "last-updated": "最後更新時間 {text}",
+  "location": "地點",
+  "filter": "篩選",
+  "search-location": "搜尋地點",
+  "faq": "問與答",
+  "get-in-touch": "聯絡我們",
+  "name": "姓名",
+  "email": "Email",
+  "message": "訊息",
+  "submit": "送出"
+}

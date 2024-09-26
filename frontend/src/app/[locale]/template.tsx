@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/routing";
 import {
   Navbar,
   NavbarBrand,
@@ -10,53 +10,49 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   Button,
 } from "@nextui-org/react";
-
-import IconHome from "@icons/home";
-import IconBike from "@icons/bike";
-import IconWaterFountain from "@icons/water-fountain";
-import IconSupport from "@icons/support";
+import { useTranslations } from "next-intl";
+import { Link } from "@components";
+import { IconHome, IconBike, IconWaterFountain, IconSupport } from "@icons";
 import Logo from "@images/logo";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const t = useTranslations();
 
   const menuItems = [
     {
-      name: "Home",
+      name: t("header.home"),
       icon: <IconHome />,
-      href: "/",
+      href: "",
     },
     {
-      name: "Bike Stations",
+      name: t("header.bike-stations"),
       icon: <IconBike />,
-      href: "/bike-stations",
+      href: "bike-stations",
     },
     {
-      name: "Water Fountains",
+      name: t("header.water-fountains"),
       icon: <IconWaterFountain />,
-      href: "/water-fountains",
+      href: "water-fountains",
     },
     {
-      name: "Support",
+      name: t("header.support"),
       icon: <IconSupport />,
-      href: "/support",
+      href: "support",
     },
   ];
 
   return (
-    <div className="flex flex-col h-screen">
-      <Navbar
-        shouldHideOnScroll
-        maxWidth="full"
-        className="bg-white shadow-md h-16"
-      >
+    <div className="h-screen min-h-[880px]">
+      <Navbar maxWidth="full" className="bg-[#ffffffc4] shadow-md h-16 fixed">
         <NavbarContent>
           <NavbarMenuToggle className="sm:hidden" />
           <NavbarBrand>
-            <Logo />
+            <Link href="">
+              <Logo />
+            </Link>
           </NavbarBrand>
         </NavbarContent>
 
@@ -75,12 +71,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
           ))}
           <NavbarItem>
             <Button
-              className="border-1 h-8 font-roboto text-sm font-bold"
+              className="border-1 px-3 h-8 font-roboto text-sm font-bold"
               color="primary"
               radius="none"
               variant="ghost"
             >
-              SIGN IN/UP
+              {t("header.signin/up")}
             </Button>
           </NavbarItem>
         </NavbarContent>
@@ -102,7 +98,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         </NavbarMenu>
       </Navbar>
 
-      <main className="flex-1">{children}</main>
+      <main className="h-full">{children}</main>
     </div>
   );
 }

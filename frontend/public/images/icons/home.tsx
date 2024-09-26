@@ -1,4 +1,6 @@
-const IconHome = ({ fill = "currentColor" }: { fill?: string }) => {
+import { IconProps } from ".";
+
+const IconHome = ({ fill = "currentColor", ...props }: IconProps) => {
   return (
     <svg
       width="18"
@@ -6,6 +8,7 @@ const IconHome = ({ fill = "currentColor" }: { fill?: string }) => {
       viewBox="0 0 18 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         fill={fill}

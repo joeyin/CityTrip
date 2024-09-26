@@ -1,4 +1,13 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import createNextIntlPlugin from "next-intl/plugin";
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: process.env.NODE_ENV === "production" ? "export" : "standalone",
+  env: {
+    app: "CityTrip",
+  },
+};
+
+export default withNextIntl(nextConfig);

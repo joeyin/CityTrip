@@ -1,11 +1,14 @@
-const CityTrip = () => {
+import { SVGProps } from "react";
+
+const CityTrip = ({ fill = "none", ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width="151"
       height="40"
       viewBox="0 0 151 40"
-      fill="none"
+      fill={fill}
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <g clipPath="url(#clip0_163_1385)">
         <path

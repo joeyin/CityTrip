@@ -1,0 +1,24 @@
+{
+  "header": {
+    "home": "Home",
+    "bike-stations": "Bike Station",
+    "water-fountains": "Water Fountain",
+    "support": "Support",
+    "signin/up": "SIGN IN/UP"
+  },
+  "devices": {
+    "bike-station": "Bike Station",
+    "water-fountain": "Water Fountain"
+  },
+  "search": "Search",
+  "last-updated": "Last updated at {text}",
+  "location": "Location",
+  "filter": "Filter",
+  "search-location": "Search Location",
+  "faq": "FAQs",
+  "get-in-touch": "Get in Touch",
+  "name": "Name",
+  "email": "Email",
+  "message": "Message",
+  "submit": "Submit"
+}
