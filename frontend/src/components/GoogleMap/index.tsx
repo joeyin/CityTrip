@@ -5,19 +5,25 @@ import {
   GoogleMap as BaseGoogleMap,
   GoogleMapProps as BaseGoogleMapProps,
   useJsApiLoader,
-  // useGoogleMap,
+  Libraries,
 } from "@react-google-maps/api";
 import GoogleMap from "./GoogleMap";
 
-export interface GoogleMapProps extends BaseGoogleMapProps {
+interface BaseGoogleMapOptionsProps extends google.maps.MapOptions {
   backControl?: boolean;
-  searchControl?: boolean;
+  gradientOverlay?: boolean;
+}
+
+export interface GoogleMapProps extends Omit<BaseGoogleMapProps, "options"> {
+  options?: BaseGoogleMapOptionsProps | undefined;
 }
 
 const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!,
+    libraries: React.useMemo<Libraries>(() => ["places"], []),
+    version: "3.55"
   });
 
   if (!isLoaded) {
@@ -35,4 +41,11 @@ const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
   );
 };
 
-export default GoogleMapWrapper;
+export default React.memo(GoogleMapWrapper);
+
+export { default as GoogleMap } from ".";
+export { default as BackControl } from "./BackControl";
+export { default as SearchControl } from "./SearchControl";
+export { default as BikeStationMarker } from "./BikeStationMarker";
+export { default as WaterFountainMarker } from "./WaterFountainMarker";
+export { default as MarkerSidebar } from "./MarkerSidebar/index";

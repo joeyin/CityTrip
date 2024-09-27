@@ -10,11 +10,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        default: "0 0 10px 1px #ABABAB",
+        test: "shadow-[0_0_10px_-1px_#ABABAB]",
+      },
       fontFamily: {
         roboto: ["Roboto", "Arial", "sans-serif"],
         poppins: ["Poppins", "Arial", "sans-serif"],
         inter: ["Inter", "Arial", "sans-serif"],
         archivo: ["Archivo", "Arial", "sans-serif"],
+        arial: ["Arial", "sans-serif"],
       },
       colors: {
         primary: "#62b354",

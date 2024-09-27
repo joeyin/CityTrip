@@ -2,40 +2,31 @@
 
 import React from "react";
 import {
-  GoogleMapProps as BaseGoogleMapProps,
+  // GoogleMapProps as BaseGoogleMapProps,
   useGoogleMap,
 } from "@react-google-maps/api";
 import styled from "styled-components";
+import { GoogleMapProps as BaseGoogleMapProps } from ".";
 import BackControl from "./BackControl";
-import SearchControl from "./SearchControl";
-
-export interface GoogleMapProps extends BaseGoogleMapProps {
-  backControl?: boolean;
-  searchControl?: boolean;
-}
 
 const GoogleMap = ({
   children,
-  backControl = true,
-  searchControl = true,
-}: GoogleMapProps) => {
+  options: { gradientOverlay = true, backControl = true } = {},
+}: BaseGoogleMapProps) => {
   const map: google.maps.Map | null = useGoogleMap();
-
-  const handleMapClick = () => {
-    map?.setZoom(16);
-  };
 
   return (
     <>
       {children}
-      <MapGradient className="absolute bottom-0 h-32 w-full" />
-      {searchControl && <SearchControl />}
-      {backControl && <BackControl onClick={handleMapClick} />}
+      {gradientOverlay && (
+        <StyledGradientOverlay className="absolute bottom-0 h-32 w-full" />
+      )}
+      {backControl && <BackControl />}
     </>
   );
 };
 
-const MapGradient = styled.div`
+const StyledGradientOverlay = styled.div`
   background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0) 0%,
@@ -47,4 +38,4 @@ const MapGradient = styled.div`
     no-repeat;
 `;
 
-export default GoogleMap;
+export default React.memo(GoogleMap);

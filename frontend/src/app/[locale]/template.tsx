@@ -56,14 +56,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
           </NavbarBrand>
         </NavbarContent>
 
-        <NavbarContent justify="end" className="hidden md:flex gap-[45px]">
+        <NavbarContent justify="end" className="hidden md:flex gap-12">
           {menuItems.map((item, index) => (
             <NavbarItem key={index}>
               <Link
-                color={item.href === pathname ? "primary" : "foreground"}
                 title={item.name}
+                color={`/${item.href}` === pathname ? "primary" : "foreground"}
                 href={item.href}
-                className="gap-[10px]"
+                className="gap-3"
               >
                 {item.icon} {item.name}
               </Link>
@@ -86,12 +86,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
             <NavbarMenuItem key={index}>
               <Link
                 title={item.name}
-                color={item.href === pathname ? "primary" : "foreground"}
-                className="w-full"
+                color={`/${item.href}` === pathname ? "primary" : "foreground"}
+                className="w-full gap-5 py-2"
                 href={item.href}
                 size="lg"
               >
-                {item.name}
+                {item.icon} {item.name}
               </Link>
             </NavbarMenuItem>
           ))}

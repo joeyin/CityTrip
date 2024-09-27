@@ -1,32 +1,74 @@
+"use client";
+
 import React from "react";
-// import { useGoogleMap } from "@react-google-maps/api";
-import { SelectItem, Button } from "@nextui-org/react";
+import { useGoogleMap, StandaloneSearchBox } from "@react-google-maps/api";
+import { SelectItem } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { Device } from "@/constants";
-import { Input, Select } from "@components";
+import { AdvancedInput, AdvancedSelect, Button } from "@components";
 import { IconFilter, IconLocation } from "@images/icons";
 
 const LayerControl = () => {
-  // const map: google.maps.Map | null = useGoogleMap();
+  const [place, setPlace] = React.useState<string>();
+  const map: google.maps.Map | null = useGoogleMap();
+  const placesSearchBoxRef = React.useRef<null | google.maps.places.SearchBox>(
+    null
+  );
   const t = useTranslations();
-  // const handleClick = () => {
-  //   map?.setZoom(16);
-  // };
+
+  const onPlacesChanged = React.useCallback(() => {
+    const placeSearch = placesSearchBoxRef.current;
+    const places = placeSearch?.getPlaces();
+
+    if (places && places.length > 0 && places[0]?.geometry?.location && places[0]?.name) {
+      setPlace(places[0]?.name);
+      map?.setCenter(places[0]?.geometry?.location.toJSON());
+    }
+  }, []);
+
+  const onSearchBoxLoad = React.useCallback(
+    (searchBox: google.maps.places.SearchBox) => {
+      placesSearchBoxRef.current = searchBox;
+    },
+    []
+  );
+
+  const onChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPlace(e.target.value);
+    },
+    []
+  );
 
   return (
     <form
       method="POST"
       action="#"
-      className="absolute top-[94px] min-w-80 rounded-md left-6 p-4 flex flex-col items-center gap-4 bg-white shadow-[0_0_10px_-1px_#ABABAB]"
+      className="absolute top-[94px] min-w-80 rounded-md left-6 p-4 flex flex-col items-center gap-4 bg-white shadow-default"
     >
-      <Input
+      <div className="w-full">
+        <StandaloneSearchBox
+          onLoad={onSearchBoxLoad}
+          onPlacesChanged={onPlacesChanged}
+        >
+          <AdvancedInput
+            color="default"
+            radius="md"
+            icon={<IconLocation />}
+            label={t("location")}
+            placeholder={t("search-location")}
+            value={place || ""}
+            isClearable
+            onChange={onChange}
+            onClear={() => setPlace("")}
+            onKeyDown={() => { }}
+          />
+        </StandaloneSearchBox>
+      </div>
+
+      <AdvancedSelect
         fullWidth
-        icon={<IconLocation />}
-        label={t("location")}
-        placeholder={t("search-location")}
-      />
-      <Select
-        fullWidth
+        radius="md"
         icon={<IconFilter />}
         label={t("filter")}
         selectionMode="multiple"
@@ -39,16 +81,18 @@ const LayerControl = () => {
             {t(`devices.${Device[item as keyof typeof Device]}`)}
           </SelectItem>
         ))}
-      </Select>
+      </AdvancedSelect>
+
       <Button
         fullWidth
-        className="rounded-md"
+        radius="md"
         color="primary"
         endContent={<i className="fa-solid fa-magnifying-glass" />}
         size="lg"
       >
         {t("search")}
       </Button>
+
       <div className="flex items-center text-xs self-end gap-2 text-gray-500">
         <i className="fa-regular fa-clock"></i>
         <span className="italic">
