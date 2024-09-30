@@ -1,27 +1,25 @@
 "use client";
 
 import React from "react";
-import {
-  // GoogleMapProps as BaseGoogleMapProps,
-  useGoogleMap,
-} from "@react-google-maps/api";
 import styled from "styled-components";
 import { GoogleMapProps as BaseGoogleMapProps } from ".";
 import BackControl from "./BackControl";
 
 const GoogleMap = ({
   children,
-  options: { gradientOverlay = true, backControl = true } = {},
+  options: {
+    gradientOverlay = true,
+    backControl = true,
+    backControlOptions,
+  } = {},
 }: BaseGoogleMapProps) => {
-  const map: google.maps.Map | null = useGoogleMap();
-
   return (
     <>
       {children}
       {gradientOverlay && (
-        <StyledGradientOverlay className="absolute bottom-0 h-32 w-full" />
+        <StyledGradientOverlay className="absolute bottom-0 h-24 w-full" />
       )}
-      {backControl && <BackControl />}
+      {backControl && <BackControl {...backControlOptions} />}
     </>
   );
 };

@@ -10,9 +10,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "modal-backdrop":
+          "linear-gradient(to right, rgba(255, 255, 255, 0.73), rgba(255, 255, 255, 0.73)), linear-gradient(to right, rgba(0, 0, 0, 0.44), rgba(0, 0, 0, 0.44))",
+      },
       boxShadow: {
         default: "0 0 10px 1px #ABABAB",
-        test: "shadow-[0_0_10px_-1px_#ABABAB]",
       },
       fontFamily: {
         roboto: ["Roboto", "Arial", "sans-serif"],
@@ -28,6 +31,7 @@ const config: Config = {
         warning: "#f6a610",
         foreground: "#8b8b8b",
         "gray-50": "#f7f7f7",
+        "gray-150": "#eaeaea",
         "gray-200": "#ececec",
         "gray-500": "#8b8b8b",
         "green-100": "#6ac85a",

@@ -8,6 +8,20 @@ const Input = extendVariants(BaseInput, {
         value: "text-sm",
       },
     },
+    radius: {
+      sm: {
+        inputWrapper: "rounded-sm",
+      },
+      md: {
+        inputWrapper: "rounded-md",
+      },
+      lg: {
+        inputWrapper: "rounded-lg",
+      },
+      xl: {
+        inputWrapper: "rounded-xl",
+      },
+    },
     color: {
       default: {
         label: "text-gray-500",

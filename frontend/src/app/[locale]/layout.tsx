@@ -5,6 +5,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 import { Providers } from "./providers";
 
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: process.env.app,

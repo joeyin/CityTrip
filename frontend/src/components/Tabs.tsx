@@ -5,7 +5,7 @@ const Tabs = extendVariants(BaseTabs, {
     size: {
       default: {
         tabContent: "font-medium font-inter text-sm",
-      }
+      },
     },
     color: {
       default: {

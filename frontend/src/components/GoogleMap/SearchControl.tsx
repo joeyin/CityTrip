@@ -7,12 +7,23 @@ import { useTranslations } from "next-intl";
 import { Device } from "@/constants";
 import { AdvancedInput, AdvancedSelect, Button } from "@components";
 import { IconFilter, IconLocation } from "@images/icons";
+import moment from "moment";
 
-const LayerControl = () => {
+export interface LayerControlProps {
+  lastUpdated: number;
+  onSubmit?: (props: React.FormEvent<HTMLFormElement>) => void;
+  isLoading?: boolean;
+}
+
+const LayerControl = ({
+  lastUpdated,
+  onSubmit,
+  isLoading,
+}: LayerControlProps) => {
   const [place, setPlace] = React.useState<string>();
   const map: google.maps.Map | null = useGoogleMap();
   const placesSearchBoxRef = React.useRef<null | google.maps.places.SearchBox>(
-    null
+    null,
   );
   const t = useTranslations();
 
@@ -20,31 +31,44 @@ const LayerControl = () => {
     const placeSearch = placesSearchBoxRef.current;
     const places = placeSearch?.getPlaces();
 
-    if (places && places.length > 0 && places[0]?.geometry?.location && places[0]?.name) {
+    if (
+      places &&
+      places.length > 0 &&
+      places[0]?.geometry?.location &&
+      places[0]?.name
+    ) {
       setPlace(places[0]?.name);
       map?.setCenter(places[0]?.geometry?.location.toJSON());
     }
-  }, []);
+  }, []); //eslint-disable-line
 
   const onSearchBoxLoad = React.useCallback(
     (searchBox: google.maps.places.SearchBox) => {
       placesSearchBoxRef.current = searchBox;
     },
-    []
+    [],
   );
 
   const onChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setPlace(e.target.value);
     },
-    []
+    [],
   );
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (onSubmit) {
+      onSubmit(e);
+    }
+  };
 
   return (
     <form
       method="POST"
       action="#"
       className="absolute top-[94px] min-w-80 rounded-md left-6 p-4 flex flex-col items-center gap-4 bg-white shadow-default"
+      onSubmit={handleSubmit}
     >
       <div className="w-full">
         <StandaloneSearchBox
@@ -61,7 +85,7 @@ const LayerControl = () => {
             isClearable
             onChange={onChange}
             onClear={() => setPlace("")}
-            onKeyDown={() => { }}
+            onKeyDown={() => {}}
           />
         </StandaloneSearchBox>
       </div>
@@ -73,8 +97,7 @@ const LayerControl = () => {
         label={t("filter")}
         selectionMode="multiple"
         defaultSelectedKeys={[Device.BIKE_STATION, Device.WATER_FOUNTAIN]}
-        isDisabled
-        className="w-"
+        // isDisabled
       >
         {Object.keys(Device).map((item) => (
           <SelectItem key={Device[item as keyof typeof Device]}>
@@ -87,6 +110,9 @@ const LayerControl = () => {
         fullWidth
         radius="md"
         color="primary"
+        type="submit"
+        isLoading={isLoading}
+        isDisabled={isLoading}
         endContent={<i className="fa-solid fa-magnifying-glass" />}
         size="lg"
       >
@@ -96,7 +122,7 @@ const LayerControl = () => {
       <div className="flex items-center text-xs self-end gap-2 text-gray-500">
         <i className="fa-regular fa-clock"></i>
         <span className="italic">
-          {t("last-updated", { text: "08:58:58 PM" })}
+          {t("last-updated", { text: moment(lastUpdated).format("h:mm:ss A") })}
         </span>
       </div>
     </form>

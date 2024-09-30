@@ -7,15 +7,28 @@ import {
   useJsApiLoader,
   Libraries,
 } from "@react-google-maps/api";
-import GoogleMap from "./GoogleMap";
+import { ButtonProps } from "@nextui-org/react";
+import GoogleMapInner from "./GoogleMap";
+import { Device } from "@/constants";
+import { BikeStationProps } from "@/hooks";
 
-interface BaseGoogleMapOptionsProps extends google.maps.MapOptions {
+export interface BaseGoogleMapOptionsProps extends google.maps.MapOptions {
   backControl?: boolean;
+  backControlOptions?: ButtonProps;
   gradientOverlay?: boolean;
 }
 
 export interface GoogleMapProps extends Omit<BaseGoogleMapProps, "options"> {
   options?: BaseGoogleMapOptionsProps | undefined;
+  defaultCenter?: google.maps.LatLng | google.maps.LatLngLiteral | undefined;
+}
+
+export interface MarkerProps extends Omit<ButtonProps, "onClick"> {
+  device: Device;
+  position: google.maps.LatLng | google.maps.LatLngLiteral;
+  active?: boolean;
+  onClick?: (props: MarkerProps | undefined) => void;
+  marker?: BikeStationProps;
 }
 
 const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
@@ -23,8 +36,11 @@ const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!,
     libraries: React.useMemo<Libraries>(() => ["places"], []),
-    version: "3.55"
+    version: "3.55",
   });
+
+  const center =
+    props.center?.lat && props.center?.lng ? props.center : props.defaultCenter;
 
   if (!isLoaded) {
     return (
@@ -35,8 +51,8 @@ const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
   }
 
   return (
-    <BaseGoogleMap {...props}>
-      <GoogleMap {...props}>{children}</GoogleMap>
+    <BaseGoogleMap {...props} center={center}>
+      <GoogleMapInner {...props}>{children}</GoogleMapInner>
     </BaseGoogleMap>
   );
 };
@@ -46,6 +62,6 @@ export default React.memo(GoogleMapWrapper);
 export { default as GoogleMap } from ".";
 export { default as BackControl } from "./BackControl";
 export { default as SearchControl } from "./SearchControl";
-export { default as BikeStationMarker } from "./BikeStationMarker";
-export { default as WaterFountainMarker } from "./WaterFountainMarker";
+export { default as BikeStationMarker } from "./Marker/BikeStation";
+export { default as WaterFountainMarker } from "./Marker/WaterFountain";
 export { default as MarkerSidebar } from "./MarkerSidebar/index";

@@ -9,7 +9,7 @@ import {
 import { IconWaterFountain } from "@images/icons";
 import { ButtonProps } from "@nextui-org/react";
 import cx from "classnames";
-import Button from "../Button";
+import { Button } from "@components";
 
 export interface MarkerProps extends ButtonProps {
   position: google.maps.LatLng | google.maps.LatLngLiteral;

@@ -20,5 +20,20 @@
   "name": "姓名",
   "email": "Email",
   "message": "訊息",
-  "submit": "送出"
+  "submit": "送出",
+  "write-a-review": "Write a review",
+  "status": "Status",
+  "in-service": "In Service",
+  "rating": "Rating",
+  "address": "Address",
+  "charging-station": "Charging Station",
+  "capacity": "Capacity",
+  "rental-method": "Rental Method",
+  "available-bikes": "Available Bikes",
+  "available-ebikes": "Available E-Bikes",
+  "available-docks": "Available Docks",
+  "last-reported": "Last Reported",
+  "no": "No",
+  "overview": "Overview",
+  "reviews": "Reviews"
 }

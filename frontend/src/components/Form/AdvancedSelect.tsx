@@ -2,43 +2,46 @@
 
 import React from "react";
 import {
-  InputProps as BaseInputProps,
+  SelectProps as BaseSelectProps,
   SlotsToClasses,
 } from "@nextui-org/react";
-import { Input as BaseInput } from ".";
+import BaseSelect from "./Select";
 import cx from "classnames";
 
-export interface AdvancedInputProps extends Omit<BaseInputProps, "classNames"> {
-  icon?: React.JSX.Element | undefined;
+export interface AdvancedSelectProps
+  extends Omit<BaseSelectProps, "classNames"> {
+  icon?: React.ReactElement;
   classNames?:
     | SlotsToClasses<
         | "base"
-        | "input"
         | "label"
         | "description"
         | "errorMessage"
         | "mainWrapper"
-        | "inputWrapper"
         | "innerWrapper"
         | "helperWrapper"
-        | "clearButton"
+        | "value"
+        | "selectorIcon"
+        | "trigger"
+        | "spinner"
+        | "listboxWrapper"
+        | "listbox"
+        | "popoverContent"
         | "icon"
       >
     | undefined;
 }
 
-const AdvancedInput = ({
+const AdvancedSelect = ({
   icon,
   fullWidth,
   radius,
-  onFocusChange,
   ...props
-}: AdvancedInputProps) => {
+}: AdvancedSelectProps) => {
   const [focused, setFocused] = React.useState(false);
 
   const handleOnFocusChange = React.useCallback((isFocused: boolean) => {
     setFocused(isFocused);
-    onFocusChange && onFocusChange(isFocused);
   }, []);
 
   return (
@@ -64,7 +67,7 @@ const AdvancedInput = ({
         },
         { "border-gray-300": focused, "border-gray-200": !focused },
         { "w-full": fullWidth },
-        { "cursor-not-allowed": props.isDisabled }
+        { "cursor-not-allowed": props.isDisabled },
       )}
     >
       {icon &&
@@ -76,21 +79,20 @@ const AdvancedInput = ({
             "duration-300",
             "mx-4",
             { "text-black": focused, "text-gray-500": !focused },
-            { "opacity-disabled": props.isDisabled },
-            props?.classNames?.icon
+            { "opacity-disabled": props?.isDisabled },
+            props?.classNames?.icon,
           ),
         })}
-      <BaseInput
+      <BaseSelect
         color="default"
         radius="none"
-        onFocusChange={handleOnFocusChange}
+        onFocus={() => handleOnFocusChange(true)}
+        onBlur={() => handleOnFocusChange(false)}
         classNames={{
-          base: "py-2 flex-1",
+          base: "flex-1",
           label: "font-poppins",
-          input: "font-poppins font-medium",
-          innerWrapper: "pl-0 pr-4",
-          inputWrapper:
-            "h-10 p-0 group-data-[focus-visible=true]:ring-0 group-data-[focus-visible=true]:ring-offset-0",
+          value: "font-poppins font-medium",
+          trigger: "pl-0 pr-4 data-[focus-visible=true]:outline-0",
         }}
         {...props}
       />
@@ -98,4 +100,4 @@ const AdvancedInput = ({
   );
 };
 
-export default AdvancedInput;
+export default AdvancedSelect;

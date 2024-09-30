@@ -11,15 +11,23 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Button,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@components";
-import { IconHome, IconBike, IconWaterFountain, IconSupport } from "@icons";
+import {
+  IconHome,
+  // IconBike,
+  // IconWaterFountain,
+  IconSupport,
+} from "@icons";
 import Logo from "@images/logo";
+import AccountModal from "@/components/User/Account";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = useTranslations();
+  const disclosure = useDisclosure();
 
   const menuItems = [
     {
@@ -27,16 +35,16 @@ export default function Template({ children }: { children: React.ReactNode }) {
       icon: <IconHome />,
       href: "",
     },
-    {
-      name: t("header.bike-stations"),
-      icon: <IconBike />,
-      href: "bike-stations",
-    },
-    {
-      name: t("header.water-fountains"),
-      icon: <IconWaterFountain />,
-      href: "water-fountains",
-    },
+    // {
+    //   name: t("header.bike-stations"),
+    //   icon: <IconBike />,
+    //   href: "bike-stations",
+    // },
+    // {
+    //   name: t("header.water-fountains"),
+    //   icon: <IconWaterFountain />,
+    //   href: "water-fountains",
+    // },
     {
       name: t("header.support"),
       icon: <IconSupport />,
@@ -46,6 +54,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="h-screen min-h-[880px]">
+      <AccountModal {...disclosure} />
       <Navbar maxWidth="full" className="bg-[#ffffffc4] shadow-md h-16 fixed">
         <NavbarContent>
           <NavbarMenuToggle className="sm:hidden" />
@@ -75,6 +84,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
               color="primary"
               radius="none"
               variant="ghost"
+              onPress={disclosure.onOpen}
             >
               {t("header.signin/up")}
             </Button>
