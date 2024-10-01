@@ -40,6 +40,9 @@ const config: Config = {
         "blue-200": "#194e81",
         "blue-400": "#113659",
       },
+      outlineColor: {
+        focus: "#62b354",
+      },
     },
   },
   plugins: [nextui()],

@@ -38,11 +38,12 @@ const ReviewForm = ({ name, ...props }: ReviewFormProps) => {
             </ModalHeader>
             <form onSubmit={handleSubmit}>
               <ModalBody>
-                <Rate name="rating" label="Rating" required />
+                <Rate name="rating" label="Rating" size="lg" required />
                 <Textarea
                   name="message"
                   variant="bordered"
                   radius="md"
+                  size="lg"
                   label={t("message")}
                   labelPlacement="outside"
                   placeholder="Enter your message"
@@ -59,19 +60,12 @@ const ReviewForm = ({ name, ...props }: ReviewFormProps) => {
                   variant="bordered"
                   color="danger"
                   radius="md"
-                  size="md"
+                  size="lg"
                   onPress={onClose}
-                  className="w-28 text-base border-1"
                 >
                   {t("cancel")}
                 </Button>
-                <Button
-                  type="submit"
-                  color="primary"
-                  radius="md"
-                  size="md"
-                  className="w-28 text-base"
-                >
+                <Button type="submit" color="primary" radius="md" size="lg">
                   {t("submit")}
                 </Button>
               </ModalFooter>

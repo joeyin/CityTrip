@@ -52,5 +52,9 @@
   "enter-name": "Enter your name",
   "enter-email": "Enter your email",
   "enter-password": "Enter your password",
-  "enter-confirm-password": "Enter your confirm password"
+  "enter-confirm-password": "Enter your confirm password",
+  "profile": "Profile",
+  "logout": "Logout",
+  "open-account-dropdown": "Open account dropdown",
+  "close": "Close"
 }

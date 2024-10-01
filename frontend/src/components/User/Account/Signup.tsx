@@ -14,6 +14,7 @@ const SignupInner = ({ onClose }: { onClose: () => void }) => {
           name="name"
           variant="bordered"
           radius="md"
+          size="lg"
           label={t("name")}
           labelPlacement="outside"
           placeholder={t("enter-name")}
@@ -28,6 +29,7 @@ const SignupInner = ({ onClose }: { onClose: () => void }) => {
           type="email"
           variant="bordered"
           radius="md"
+          size="lg"
           label={t("email")}
           labelPlacement="outside"
           placeholder={t("enter-email")}
@@ -42,6 +44,7 @@ const SignupInner = ({ onClose }: { onClose: () => void }) => {
           type="password"
           variant="bordered"
           radius="md"
+          size="lg"
           label={t("password")}
           labelPlacement="outside"
           placeholder={t("enter-password")}
@@ -56,6 +59,7 @@ const SignupInner = ({ onClose }: { onClose: () => void }) => {
           type="password"
           variant="bordered"
           radius="md"
+          size="lg"
           label={t("confirm-password")}
           labelPlacement="outside"
           placeholder={t("enter-confirm-password")}
@@ -71,19 +75,12 @@ const SignupInner = ({ onClose }: { onClose: () => void }) => {
           variant="bordered"
           color="danger"
           radius="md"
-          size="md"
+          size="lg"
           onPress={onClose}
-          className="w-28 text-base border-1"
         >
           {t("cancel")}
         </Button>
-        <Button
-          type="submit"
-          color="primary"
-          radius="md"
-          size="md"
-          className="w-28 text-base"
-        >
+        <Button type="submit" color="primary" radius="md" size="lg">
           {t("sign-up")}
         </Button>
       </ModalFooter>

@@ -10,7 +10,7 @@ import { IconFilter, IconLocation } from "@images/icons";
 import moment from "moment";
 
 export interface LayerControlProps {
-  lastUpdated: number;
+  lastUpdated: number | undefined;
   onSubmit?: (props: React.FormEvent<HTMLFormElement>) => void;
   isLoading?: boolean;
 }

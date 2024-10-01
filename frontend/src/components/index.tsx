@@ -8,4 +8,7 @@ export { default as Button } from "./Form/Button";
 export { default as Textarea } from "./Form/Textarea";
 export { default as Rate } from "./Form/Rate";
 export { default as Tabs } from "./Tabs";
-export * from "./Modal";
+export { default as Navbar } from "./Header/Navbar";
+export { default as UserButton } from "./Header/UserButton";
+export { Modal } from "./Modal";
+export type { ModalProps } from "./Modal";

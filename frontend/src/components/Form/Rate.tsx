@@ -59,7 +59,7 @@ const Rate = ({
             isIconOnly
             shadow="none"
             radius="none"
-            className="w-fit min-w-fit p-0"
+            className="w-fit min-w-fit p-0 data-[hover=true]:bg-transparent"
             disableRipple
             onPress={() => set((index + 1).toString())}
             title={t("star", { text: index + 1 })}

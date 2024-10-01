@@ -1,8 +1,8 @@
 "use client";
 
 import { Device } from "@/constants";
-import { useMemo, useState, useRef, useCallback } from "react";
-import useSWR from "swr";
+import { useMemo, useState, useRef, useEffect, useCallback } from "react";
+import useSWR, { useSWRConfig } from "swr";
 
 export interface GeolocationProps {
   loading: boolean | null;
@@ -148,12 +148,16 @@ export function useGeolocationFn(
 }
 
 export function useBikeStations(): {
-  lastUpdated: number;
+  lastUpdated: number | undefined;
   stations: BikeStationProps[] | undefined;
   refetch: () => void;
   isLoading: boolean;
 } {
+  const [hasLoggedError, setHasLoggedError] = useState(false);
+  const { onError } = useSWRConfig();
+
   const {
+    error: informationHasError,
     data: information,
     isLoading: isLoadingInformation,
     isValidating: isValidatingInformation,
@@ -162,9 +166,16 @@ export function useBikeStations(): {
     last_updated: number;
     ttl: number;
     data: { stations: StationInformationProps[] };
-  }>("https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information");
+  }>(
+    "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information",
+    null,
+    {
+      onError: () => {},
+    },
+  );
 
   const {
+    error: statusHasError,
     data: status,
     isLoading: isLoadingStatus,
     isValidating: isValidatingStatus,
@@ -173,7 +184,9 @@ export function useBikeStations(): {
     last_updated: number;
     ttl: number;
     data: { stations: StationStatusProps[] };
-  }>("https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_status");
+  }>("https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_status", null, {
+    onError: () => {},
+  });
 
   const stations: BikeStationProps[] | undefined = useMemo(() => {
     if (!status || !information?.data?.stations) return undefined;
@@ -189,14 +202,22 @@ export function useBikeStations(): {
   }, [status, information]);
 
   const refetch = useCallback(async () => {
+    setHasLoggedError(false);
     await Promise.all([refetchInformation(), refetchStatus()]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const lastUpdated = useMemo(() => {
-    return Date.now();
+    return status && status.last_updated * 1000;
+  }, [status]);
+
+  useEffect(() => {
+    if ((informationHasError || statusHasError) && !hasLoggedError) {
+      setHasLoggedError(true);
+      onError(informationHasError || statusHasError, "", {} as never);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stations]);
+  }, [informationHasError, statusHasError]);
 
   return {
     lastUpdated,

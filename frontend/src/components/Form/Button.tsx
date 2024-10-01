@@ -7,6 +7,9 @@ const Button = extendVariants(BaseButton, {
     },
   ],
   variants: {
+    size: {
+      lg: "min-w-32",
+    },
     shadow: {
       sm: "shadow-sm",
       md: "shadow-md",
@@ -23,7 +26,8 @@ const Button = extendVariants(BaseButton, {
     },
     variant: {
       light: "bg-white",
-      transparent: "bg-transparent data-[hover=true]:bg-transparent",
+      transparent: "bg-transparent data-[hover=true]:bg-gray-150",
+      bordered: "border-1",
     },
     color: {
       secondary:

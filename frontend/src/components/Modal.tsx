@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   Modal as BaseModal,
   extendVariants,
@@ -8,16 +9,14 @@ import {
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import Button from "./Form/Button";
 import { IconCancel } from "@images/icons";
-import React from "react";
+import { useTranslations } from "next-intl";
 
 export const VariantModal = extendVariants(BaseModal, {
   variants: {
     variant: {
       tab: {
-        body: "pt-7 pb-3 gap-7",
-        header: "p-0 h-[55px]",
-        closeButton:
-          "top-0 right-0 p-0 w-[55px] h-[55px] min-w-fit min-h-fit rounded-none z-20 data-[focus-visible=true]:outline-offset-[-2px]",
+        header: "p-0 h-[61px] !pr-0",
+        closeButton: "top-0 right-0 p-0 min-w-fit min-h-fit z-20",
       },
       bordered: {
         header: "border-b border-gray-150",
@@ -61,23 +60,28 @@ export const Modal = ({
   disclosure,
   ...props
 }: ModalProps) => {
+  const t = useTranslations();
+
   return (
     <VariantModal
       {...props}
-      isOpen={disclosure.isOpen}
-      onOpenChange={disclosure.onOpenChange}
+      isOpen={disclosure?.isOpen}
+      onOpenChange={disclosure?.onOpenChange}
       classNames={{
-        header: "font-roboto font-normal",
-        body: "font-roboto",
-        footer: "font-roboto test",
+        body: "pt-7 pb-3 gap-7",
+        wrapper: "font-roboto",
+        header: "font-normal pr-[61px]",
+        closeButton:
+          "top-0 right-0 w-[61px] h-[61px] rounded-none data-[focus-visible=true]:outline-offset-[-2px] customized-close-button data-[focus-visible=true]:outline-transparent",
       }}
       closeButton={
         <Button
-          isIconOnly
+          title={t("close")}
+          // variant="light"
           variant="transparent"
           radius="none"
           shadow="none"
-          className="p-20"
+          isIconOnly
         >
           <IconCancel />
         </Button>

@@ -5,3 +5,9 @@
 @tailwind utilities;
 
 .gm-style iframe + div { border: none !important; }
+
+@layer utilities {
+  button.customized-close-button[data-focus=true][data-focus-visible=true] {
+    @apply outline-focus;
+  }
+}

@@ -18,7 +18,9 @@ const Home = () => {
       timeout: 3500, // Set a timeout to reject the promise if it takes more than 3.5 seconds
     },
     (err) => {
-      console.error(err);
+      if (process.env.NODE_ENV === "development") {
+        console.error(err);
+      }
       toast.error(err?.message);
     },
   );
@@ -67,6 +69,7 @@ const Home = () => {
         streetViewControl: false,
         zoomControl: false,
         mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID!,
+        mapTypeControl: false,
       }}
     >
       <SearchControl

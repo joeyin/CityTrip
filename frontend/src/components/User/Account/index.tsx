@@ -8,7 +8,11 @@ import { useTranslations } from "next-intl";
 import Signin from "./Signin";
 import Signup from "./Signup";
 
-const AccountModal = (disclosure: UseDisclosureReturn) => {
+export interface AccountModalProps {
+  disclosure: UseDisclosureReturn;
+}
+
+const AccountModal = ({ disclosure }: AccountModalProps) => {
   const t = useTranslations();
   const [selectedKey, setSelectedKey] = React.useState<Key>("signin");
   const [disableAnimation, setDisableAnimation] = React.useState(true);
@@ -39,6 +43,7 @@ const AccountModal = (disclosure: UseDisclosureReturn) => {
             <ModalHeader>
               <Tabs
                 fullWidth
+                size="lg"
                 aria-label="Tabs"
                 color="primary"
                 variant="underlined"

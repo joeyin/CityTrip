@@ -20,7 +20,7 @@ const IconBike = ({
           attributeType="XML"
           type="translate"
           values="-25,0; 25,0"
-          dur="1s"
+          dur=".8s"
           repeatCount="indefinite"
         />
         <path

@@ -17,7 +17,7 @@ const GoogleMap = ({
     <>
       {children}
       {gradientOverlay && (
-        <StyledGradientOverlay className="absolute bottom-0 h-24 w-full" />
+        <StyledGradientOverlay className="absolute bottom-0 h-16 w-full" />
       )}
       {backControl && <BackControl {...backControlOptions} />}
     </>
@@ -26,12 +26,12 @@ const GoogleMap = ({
 
 const StyledGradientOverlay = styled.div`
   background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.15) 15%,
-      rgba(255, 255, 255, 0.68) 45%,
-      rgb(255 255 255) 68%,
-      rgba(255, 255, 255, 1) 100%
+      rgb(255 255 255 / 0%) 0%,
+      rgb(255 255 255 / 10%) 15%,
+      rgb(255 255 255 / 25%) 25%,
+      rgb(255 255 255 / 60%) 45%,
+      rgb(255 255 255 / 100%) 65%,
+      rgb(255 255 255) 100%
     )
     no-repeat;
 `;
