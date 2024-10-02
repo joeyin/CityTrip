@@ -15,3 +15,4 @@ export { default as IconFilter } from "./filter";
 export { default as IconDirection } from "./direction";
 export { default as IconCancel } from "./cancel";
 export { default as IconStar } from "./star";
+export { default as IconUserFill } from "./user-fill";

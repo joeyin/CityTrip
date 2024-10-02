@@ -75,6 +75,7 @@ const Home = () => {
         zoomControl: false,
         mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ID!,
         mapTypeControl: false,
+        clickableIcons: false,
       }}
     >
       <SearchControl

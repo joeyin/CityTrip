@@ -32,7 +32,7 @@ const InstantFilter = () => {
           radius="none"
           isIconOnly
           variant="transparent"
-          onPress={disclosure.onOpen}
+          onClick={disclosure.onOpen}
         >
           <i className="fa-solid fa-magnifying-glass" />
         </Button>

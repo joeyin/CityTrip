@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useDisclosure, NavbarItem, Button } from "@nextui-org/react";
+import { useDisclosure, NavbarItem } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { useApp } from "@/providers/AppProvider";
 import {
@@ -13,6 +13,8 @@ import {
 } from "@nextui-org/react";
 import ProfileModal from "@/components/User/Profile";
 import AccountModal from "@/components/User/Account";
+import { IconUserFill } from "@images/icons";
+import { Button } from "@components";
 
 export default function UserButton() {
   const t = useTranslations();
@@ -96,7 +98,17 @@ export default function UserButton() {
     <NavbarItem>
       <AccountModal disclosure={accountDisclosure} />
       <Button
-        className="border-1 mx-5 px-5 h-9 font-roboto text-sm font-bold"
+        title={t("header.signin/up")}
+        className="min-w-fit p-0 h-full w-[var(--navbar-height)] font-roboto text-sm font-bold sm:hidden text-gray-500"
+        radius="none"
+        variant="transparent"
+        onClick={accountDisclosure.onOpen}
+      >
+        <IconUserFill />
+      </Button>
+      <Button
+        title={t("header.signin/up")}
+        className="border-1 mx-5 px-5 h-9 font-roboto text-sm font-bold hidden sm:block"
         color="primary"
         radius="none"
         variant="ghost"

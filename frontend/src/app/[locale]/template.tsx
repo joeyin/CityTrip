@@ -40,7 +40,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="h-screen min-h-[880px]">
+    <div className="h-screen">
       <AccountModal disclosure={disclosure} />
       <Navbar menuItems={menuItems} />
       <main className="h-full">{children}</main>
