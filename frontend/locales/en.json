@@ -56,5 +56,6 @@
   "profile": "Profile",
   "logout": "Logout",
   "open-account-dropdown": "Open account dropdown",
-  "close": "Close"
+  "close": "Close",
+  "instant-filter": "Instant Filter"
 }

@@ -3,7 +3,7 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { SWRConfig } from "swr";
 import { ToastContainer, toast } from "react-toastify";
-import { UserProvider } from "@/providers/UserProvider";
+import { AppProvider } from "@/providers/AppProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -31,7 +31,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           newestOnTop
           position="bottom-left"
         />
-        <UserProvider>{children}</UserProvider>
+        <AppProvider>{children}</AppProvider>
       </NextUIProvider>
     </SWRConfig>
   );

@@ -8,7 +8,7 @@ import { IconDirection, IconCancel } from "@images/icons";
 import { useTranslations } from "next-intl";
 import Overview from "./Overview";
 import Reviews from "./Reviews/index";
-import { BikeStationProps, GeolocationProps } from "@/hooks";
+import { BikeStationProps, GeolocationProps, useIsMobile } from "@/hooks";
 
 export interface MarkerSidebarProps {
   visible?: boolean;
@@ -25,6 +25,7 @@ const MarkerSidebar = ({
 }: MarkerSidebarProps) => {
   const t = useTranslations();
   const [selectedKey, setSelectedKey] = React.useState<Key>("overview");
+  const isMobile = useIsMobile();
 
   React.useEffect(() => {
     if (!visible) {
@@ -32,32 +33,41 @@ const MarkerSidebar = ({
     }
   }, [visible]);
 
+  const animation = React.useMemo(
+    () => ({
+      initial: isMobile ? { y: "100%" } : { x: "100%" },
+      animate: isMobile ? { y: 0 } : { x: 0 },
+      exit: isMobile ? { y: "100%" } : { x: "100%" },
+    }),
+    [isMobile],
+  );
+
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ x: "100%" }}
-          animate={{
-            x: 0,
-          }}
-          exit={{
-            x: "100%",
-          }}
+          {...animation}
           transition={{ type: "spring", bounce: 0, duration: 0.6 }}
           className={cx(
             "fixed",
-            "h-full",
             "bg-white",
             "z-30",
             "right-0",
-            "pt-16",
-            "shadow-lg",
-            "w-[311px]",
             "flex",
             "flex-col",
+            "w-full",
+            "md:w-[311px]",
+            "md:h-full",
+            "h-[calc(calc(100vh-4rem)/1.5)]", //--navbar-height
+            "bottom-0",
+            "pt-0",
+            "md:pt-16",
+            "shadow-[0_0_13px_0_#505050c4]",
+            "md:shadow-lg",
+            "md:shadow-gray-500",
           )}
         >
-          <div className="h-[52px] flex justify-between">
+          <div className="h-[62px] sm:h-[52px] flex justify-between">
             <div className="flex">
               <Button
                 as="a"
@@ -67,7 +77,7 @@ const MarkerSidebar = ({
                 isDisabled={!(geolocation?.latitude && geolocation?.longitude)}
                 radius="none"
                 variant="light"
-                className="h-full min-w-[52px] text-gray-500 data-[hover=true]:text-black data-[focus-visible=true]:outline-offset-[-2px]"
+                className="h-full min-w-[62px] sm:min-w-[52px] text-gray-500 data-[hover=true]:text-black data-[focus-visible=true]:outline-offset-[-2px]"
                 target="_blank"
                 href={`https://www.google.com/maps/dir/?api=1&origin=${geolocation?.latitude},${geolocation?.longitude}&destination=${marker?.lat},${marker?.lon}`}
               >
@@ -107,7 +117,7 @@ const MarkerSidebar = ({
               isIconOnly
               radius="none"
               variant="light"
-              className="h-full min-w-[52px] bg-gray-50 text-gray-500 data-[hover=true]:text-black data-[focus-visible=true]:outline-offset-[-2px]"
+              className="h-full min-w-[62px] sm:min-w-[52px] bg-gray-50 text-gray-500 data-[hover=true]:text-black data-[focus-visible=true]:outline-offset-[-2px]"
               onPress={onCancel}
             >
               <IconCancel />

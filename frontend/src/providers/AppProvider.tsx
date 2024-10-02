@@ -6,23 +6,22 @@ export interface UserProps {
   avatar: string;
 }
 
-export interface UserContextType {
+export interface AppContextType {
   user: UserProps | null;
-  loading: boolean;
   logout: () => void;
 }
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const useUser = (): UserContextType => {
-  const context = useContext(UserContext);
+export const useApp = (): AppContextType => {
+  const context = useContext(AppContext);
   if (context === undefined) {
-    throw new Error("useUser must be used within a UserProvider");
+    throw new Error("useApp must be used within a AppProvider");
   }
   return context;
 };
 
-export const UserProvider: React.FC<{ children: ReactNode }> = ({
+export const AppProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // const [user, setUser] = useState<UserProps | null>(null);
@@ -32,15 +31,14 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     avatar:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
   });
-  const [loading, setLoading] = useState<boolean>(false);
 
   const logout = React.useCallback(() => {
     setUser(null);
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loading, logout }}>
+    <AppContext.Provider value={{ user, logout }}>
       {children}
-    </UserContext.Provider>
+    </AppContext.Provider>
   );
 };

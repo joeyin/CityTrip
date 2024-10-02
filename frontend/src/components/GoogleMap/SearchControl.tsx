@@ -8,19 +8,27 @@ import { Device } from "@/constants";
 import { AdvancedInput, AdvancedSelect, Button } from "@components";
 import { IconFilter, IconLocation } from "@images/icons";
 import moment from "moment";
+import cx from "classnames";
+import { FormBody } from "@/hooks";
 
 export interface LayerControlProps {
-  lastUpdated: number | undefined;
-  onSubmit?: (props: React.FormEvent<HTMLFormElement>) => void;
+  className?: string;
+  lastUpdated?: number;
+  onSubmit?: (props: FormBody) => void;
   isLoading?: boolean;
+  formBody?: FormBody;
 }
 
 const LayerControl = ({
+  className,
   lastUpdated,
   onSubmit,
   isLoading,
+  formBody,
 }: LayerControlProps) => {
   const [place, setPlace] = React.useState<string>();
+  const [filter, setFilter] = React.useState<string[]>(formBody?.filter || []);
+
   const map: google.maps.Map | null = useGoogleMap();
   const placesSearchBoxRef = React.useRef<null | google.maps.places.SearchBox>(
     null,
@@ -59,7 +67,7 @@ const LayerControl = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) {
-      onSubmit(e);
+      onSubmit({ filter });
     }
   };
 
@@ -67,7 +75,20 @@ const LayerControl = ({
     <form
       method="POST"
       action="#"
-      className="absolute top-[94px] min-w-80 rounded-md left-6 p-4 flex flex-col items-center gap-4 bg-white shadow-default"
+      className={cx(className, [
+        "absolute",
+        "top-[94px]",
+        "min-w-80",
+        "rounded-md",
+        "left-6",
+        "p-4",
+        "flex",
+        "flex-col",
+        "items-center",
+        "gap-4",
+        "bg-white",
+        "shadow-default",
+      ])}
       onSubmit={handleSubmit}
     >
       <div className="w-full">
@@ -76,6 +97,7 @@ const LayerControl = ({
           onPlacesChanged={onPlacesChanged}
         >
           <AdvancedInput
+            name="location"
             color="default"
             radius="md"
             icon={<IconLocation />}
@@ -91,13 +113,15 @@ const LayerControl = ({
       </div>
 
       <AdvancedSelect
+        multiple
+        name="filter"
         fullWidth
         radius="md"
         icon={<IconFilter />}
         label={t("filter")}
         selectionMode="multiple"
-        defaultSelectedKeys={[Device.BIKE_STATION, Device.WATER_FOUNTAIN]}
-        // isDisabled
+        onChange={(e) => setFilter(e.target.value.split(","))}
+        defaultSelectedKeys={filter}
       >
         {Object.keys(Device).map((item) => (
           <SelectItem key={Device[item as keyof typeof Device]}>

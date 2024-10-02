@@ -3,7 +3,7 @@
 import React from "react";
 import { useDisclosure, NavbarItem, Button } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { useUser } from "@/providers/UserProvider";
+import { useApp } from "@/providers/AppProvider";
 import {
   Dropdown,
   DropdownTrigger,
@@ -16,7 +16,7 @@ import AccountModal from "@/components/User/Account";
 
 export default function UserButton() {
   const t = useTranslations();
-  const { user, logout, loading } = useUser();
+  const { user, logout } = useApp();
   const profileDisclosure = useDisclosure();
   const accountDisclosure = useDisclosure();
 
@@ -29,11 +29,11 @@ export default function UserButton() {
           radius="none"
           classNames={{
             base: "p-0 translate-x-[12px] translate-y-[-7px] font-roboto",
-            content: "p-0 min-w-[235px] shadow-lg",
+            content: "p-0 md:min-w-[235px] shadow-lg",
             trigger: [
               "flex-row-reverse",
-              "min-w-[235px]",
-              "max-w-[235px]",
+              "md:min-w-[235px]",
+              "md:max-w-[235px]",
               "aria-expanded:scale-[1]",
               "aria-expanded:bg-gray-200",
               "hover:bg-gray-200",
@@ -57,7 +57,7 @@ export default function UserButton() {
                 },
               }}
               classNames={{
-                wrapper: "overflow-hidden",
+                wrapper: "overflow-hidden hidden md:block",
                 name: "font-roboto text-primary text-base font-bold truncate w-full",
               }}
             />

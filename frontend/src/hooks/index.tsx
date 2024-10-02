@@ -59,7 +59,7 @@ export interface BikeStationProps
   extends StationInformationProps,
     StationStatusProps {
   active?: boolean;
-  onClick?: (props: BikeStationProps) => void;
+  onPress?: (props: BikeStationProps) => void;
   rating?: number;
   device: Device;
 }
@@ -147,12 +147,22 @@ export function useGeolocationFn(
   return [state, fetchCurrentLocation];
 }
 
-export function useBikeStations(): {
+export interface FormBody {
+  [key: string]: string[];
+}
+
+export function useSearch({
+  defaultFormBody = {},
+}: {
+  defaultFormBody?: FormBody;
+}): {
+  formBody: FormBody;
   lastUpdated: number | undefined;
   stations: BikeStationProps[] | undefined;
-  refetch: () => void;
+  refetch: (form: FormBody) => void;
   isLoading: boolean;
 } {
+  const [formBody, setFormBody] = useState<FormBody>(defaultFormBody);
   const [hasLoggedError, setHasLoggedError] = useState(false);
   const { onError } = useSWRConfig();
 
@@ -201,7 +211,8 @@ export function useBikeStations(): {
     }));
   }, [status, information]);
 
-  const refetch = useCallback(async () => {
+  const refetch = useCallback(async (body: FormBody) => {
+    setFormBody(body);
     setHasLoggedError(false);
     await Promise.all([refetchInformation(), refetchStatus()]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -220,6 +231,7 @@ export function useBikeStations(): {
   }, [informationHasError, statusHasError]);
 
   return {
+    formBody,
     lastUpdated,
     stations,
     refetch,
@@ -229,4 +241,32 @@ export function useBikeStations(): {
       isValidatingInformation ||
       isValidatingStatus,
   };
+}
+
+export function useIsFirstRender() {
+  const firstRenderRef = useRef(true);
+
+  if (firstRenderRef.current === true) {
+    firstRenderRef.current = false;
+    return true;
+  }
+
+  return firstRenderRef.current;
+}
+
+export function useIsMobile() {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  return width < 768;
 }

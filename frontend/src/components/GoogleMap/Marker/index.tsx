@@ -10,14 +10,14 @@ import BikeStation from "./BikeStation";
 const Marker = (props: BikeStationProps) => {
   const map: google.maps.Map | null = useGoogleMap();
   const handelClick = React.useCallback(() => {
-    if (props.onClick) {
-      props.onClick(props);
+    if (props.onPress) {
+      props.onPress(props);
     }
     map?.panTo(new google.maps.LatLng(props.lat, props.lon));
   }, []); //eslint-disable-line
 
   return props.device === Device.BIKE_STATION ? (
-    <BikeStation {...props} onClick={handelClick} />
+    <BikeStation {...props} onPress={handelClick} />
   ) : (
     <div></div>
   );

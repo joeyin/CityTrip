@@ -67,6 +67,7 @@ export const Modal = ({
       {...props}
       isOpen={disclosure?.isOpen}
       onOpenChange={disclosure?.onOpenChange}
+      placement="center"
       classNames={{
         body: "pt-7 pb-3 gap-7",
         wrapper: "font-roboto",
@@ -77,7 +78,6 @@ export const Modal = ({
       closeButton={
         <Button
           title={t("close")}
-          // variant="light"
           variant="transparent"
           radius="none"
           shadow="none"

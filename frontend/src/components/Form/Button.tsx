@@ -26,7 +26,7 @@ const Button = extendVariants(BaseButton, {
     },
     variant: {
       light: "bg-white",
-      transparent: "bg-transparent data-[hover=true]:bg-gray-150",
+      transparent: "bg-transparent data-[hover=true]:bg-transparent",
       bordered: "border-1",
     },
     color: {

@@ -3,11 +3,16 @@
 import React from "react";
 import { GoogleMap, SearchControl, MarkerSidebar } from "@components/GoogleMap";
 import { toast } from "react-toastify";
-import { useGeolocationFn, useBikeStations, BikeStationProps } from "@/hooks";
+import { useGeolocationFn, useSearch, BikeStationProps } from "@/hooks";
 import Marker from "@/components/GoogleMap/Marker";
+import { Device } from "@/constants";
 
 const Home = () => {
-  const { stations, lastUpdated, isLoading, refetch } = useBikeStations();
+  const { stations, lastUpdated, isLoading, refetch, formBody } = useSearch({
+    defaultFormBody: {
+      filter: [Device.BIKE_STATION, Device.WATER_FOUNTAIN],
+    },
+  });
 
   const [active, setActive] = React.useState<undefined | BikeStationProps>(
     undefined,
@@ -73,15 +78,17 @@ const Home = () => {
       }}
     >
       <SearchControl
+        className="hidden md:flex"
         isLoading={isLoading}
         lastUpdated={lastUpdated}
+        formBody={formBody}
         onSubmit={refetch}
       />
       {stations?.map((i) => (
         <Marker
           {...i}
           key={i.station_id}
-          onClick={setActive}
+          onPress={setActive}
           active={i.station_id === active?.station_id}
         />
       ))}

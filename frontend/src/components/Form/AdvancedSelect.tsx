@@ -84,6 +84,7 @@ const AdvancedSelect = ({
           ),
         })}
       <BaseSelect
+        {...props}
         color="default"
         radius="none"
         onFocus={() => handleOnFocusChange(true)}
@@ -94,7 +95,6 @@ const AdvancedSelect = ({
           value: "font-poppins font-medium",
           trigger: "pl-0 pr-4 data-[focus-visible=true]:outline-0",
         }}
-        {...props}
       />
     </div>
   );

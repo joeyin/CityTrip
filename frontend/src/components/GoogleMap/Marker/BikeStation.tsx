@@ -13,12 +13,12 @@ import { Button } from "@components";
 import { BikeStationProps } from "@/hooks";
 
 const BikeStationMarker = ({
-  onClick = () => {},
+  onPress = () => {},
   ...props
 }: BikeStationProps) => {
   const map: google.maps.Map | null = useGoogleMap();
   const handelClick = React.useCallback(() => {
-    onClick(props);
+    onPress(props);
     map?.panTo(new google.maps.LatLng(props.lat, props.lon));
   }, []); //eslint-disable-line
 
@@ -38,6 +38,7 @@ const BikeStationMarker = ({
           disableRipple={props.active}
           color="primary"
           radius="sm"
+          onPress={handelClick}
           onClick={handelClick}
           data-active={props.active}
           className={cx(
