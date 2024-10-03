@@ -51,6 +51,7 @@ const MarkerSidebar = ({
     <AnimatePresence>
       {visible && (
         <motion.div
+          id="marker-sidebar"
           {...animation}
           transition={{ type: "spring", bounce: 0, duration: 0.6 }}
           className={cx(

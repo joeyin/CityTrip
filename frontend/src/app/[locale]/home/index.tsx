@@ -74,7 +74,7 @@ const Home = () => {
     <GoogleMap
       onClick={() => setActive(undefined)}
       mapContainerClassName="w-full h-full relative"
-      zoom={13}
+      zoom={15}
       defaultCenter={defaultMapCenter}
       center={mapCenter}
       options={{

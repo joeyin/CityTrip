@@ -58,5 +58,10 @@
   "close": "Close",
   "instant-filter": "Instant Filter",
   "reason": "Reason",
-  "type": "Type"
+  "type": "Type",
+  "Bottle Filling": "Bottle Filling",
+  "Drinking Fountain": "Drinking Fountain",
+  "Bottle Filling Station": "Bottle Filling Station",
+  "Dog Fountain": "Dog Fountain",
+  "Water Tap": "Water Tap"
 }

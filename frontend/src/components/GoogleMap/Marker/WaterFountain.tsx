@@ -5,21 +5,17 @@ import {
   Marker as BaseMarker,
   OverlayView,
   OverlayViewF,
-  useGoogleMap,
 } from "@react-google-maps/api";
 import { IconCup } from "@images/icons";
 import cx from "classnames";
 import { Button } from "@components";
 import { WaterFountainProp } from "@/hooks";
 
-const WaterFountainMarker = ({
-  onPress = () => {},
-  ...props
-}: WaterFountainProp) => {
-  const map: google.maps.Map | null = useGoogleMap();
+const WaterFountainMarker = (props: WaterFountainProp) => {
   const handelClick = React.useCallback(() => {
-    onPress(props);
-    map?.panTo(new google.maps.LatLng(props.lat, props.lon));
+    if (props.onPress) {
+      props.onPress(props);
+    }
   }, []); //eslint-disable-line
 
   const position = React.useMemo(
@@ -39,7 +35,6 @@ const WaterFountainMarker = ({
           data-active={props.active}
           color={props.active ? "warning" : "secondary"}
           radius="sm"
-          onPress={handelClick}
           onClick={handelClick}
           className={cx(
             "p-0",

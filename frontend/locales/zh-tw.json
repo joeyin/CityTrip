@@ -58,5 +58,10 @@
   "close": "關閉",
   "instant-filter": "即時篩選",
   "reason": "原因",
-  "type": "類別"
+  "type": "類別",
+  "Bottle Filling": "裝水站",
+  "Drinking Fountain": "飲水池",
+  "Bottle Filling Station": "裝水站",
+  "Dog Fountain": "狗飲水池",
+  "Water Tap": "水龍頭"
 }

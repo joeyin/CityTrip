@@ -5,21 +5,17 @@ import {
   Marker as BaseMarker,
   OverlayView,
   OverlayViewF,
-  useGoogleMap,
 } from "@react-google-maps/api";
 import { IconBike } from "@images/icons";
 import cx from "classnames";
 import { Button } from "@components";
 import { BikeStationProps } from "@/hooks";
 
-const BikeStationMarker = ({
-  onPress = () => {},
-  ...props
-}: BikeStationProps) => {
-  const map: google.maps.Map | null = useGoogleMap();
+const BikeStationMarker = (props: BikeStationProps) => {
   const handelClick = React.useCallback(() => {
-    onPress(props);
-    map?.panTo(new google.maps.LatLng(props.lat, props.lon));
+    if (props.onPress) {
+      props.onPress(props);
+    }
   }, []); //eslint-disable-line
 
   const position = React.useMemo(
@@ -39,7 +35,6 @@ const BikeStationMarker = ({
           data-active={props.active}
           color="primary"
           radius="sm"
-          onPress={handelClick}
           onClick={handelClick}
           className={cx(
             "p-0",
