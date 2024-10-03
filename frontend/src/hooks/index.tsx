@@ -1,6 +1,7 @@
 "use client";
 
-import { Device } from "@/constants";
+import { Facility } from "@/constants";
+import { useApp } from "@/providers/AppProvider";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
@@ -57,11 +58,56 @@ export interface StationStatusProps {
 
 export interface BikeStationProps
   extends StationInformationProps,
-    StationStatusProps {
+    Omit<StationStatusProps, "status"> {
   active?: boolean;
-  onPress?: (props: BikeStationProps) => void;
+  onPress?: (props: WaterFountainProp | BikeStationProps) => void;
   rating?: number;
-  device: Device;
+  facility: Facility;
+  status: boolean;
+  status_text: string;
+}
+
+export interface WaterFountainResProp {
+  type: string;
+  geometry: {
+    coordinates: [number, number][];
+    type: string;
+  };
+  properties: {
+    AssetName: string;
+    Comments: string;
+    PostedDate: string;
+    Reason: string;
+    Status: string;
+    address: string;
+    alternative_name: string;
+    asset_id: string;
+    id: string;
+    location: string;
+    location_details: string;
+    type: string;
+    url: string;
+    _id: string;
+  };
+}
+
+export interface WaterFountainProp {
+  station_id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  address: string;
+  status: boolean;
+  status_text: string;
+  reason: string;
+  type: string[];
+  location: string;
+  location_details: string;
+  url: string;
+  active?: boolean;
+  onPress?: (props: WaterFountainProp | BikeStationProps) => void;
+  rating?: number;
+  facility: Facility;
 }
 
 export enum RentalMethod {
@@ -147,24 +193,37 @@ export function useGeolocationFn(
   return [state, fetchCurrentLocation];
 }
 
-export interface FormBody {
-  [key: string]: string[];
-}
-
-export function useSearch({
-  defaultFormBody = {},
-}: {
-  defaultFormBody?: FormBody;
-}): {
-  formBody: FormBody;
+export function useSearch(): {
   lastUpdated: number | undefined;
   stations: BikeStationProps[] | undefined;
-  refetch: (form: FormBody) => void;
+  waterFountains: WaterFountainProp[] | undefined;
+  refetch: () => void;
   isLoading: boolean;
 } {
-  const [formBody, setFormBody] = useState<FormBody>(defaultFormBody);
   const [hasLoggedError, setHasLoggedError] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<number>(new Date().getTime());
+
   const { onError } = useSWRConfig();
+  const { queryParameters } = useApp();
+
+  const {
+    error: waterFountainsHasError,
+    data: waterFountainsResponse,
+    isLoading: isLoadingWaterFountains,
+    isValidating: isValidatingWaterFountains,
+    mutate: refetchWaterFountains,
+  } = useSWR<{
+    features: WaterFountainResProp[];
+    type: string;
+  }>(
+    {
+      url: "drinking-fountains.json",
+      method: "GET",
+    },
+    {
+      onError: () => {},
+    },
+  );
 
   const {
     error: informationHasError,
@@ -177,8 +236,9 @@ export function useSearch({
     ttl: number;
     data: { stations: StationInformationProps[] };
   }>(
-    "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information",
-    null,
+    {
+      url: "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information",
+    },
     {
       onError: () => {},
     },
@@ -194,52 +254,107 @@ export function useSearch({
     last_updated: number;
     ttl: number;
     data: { stations: StationStatusProps[] };
-  }>("https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_status", null, {
-    onError: () => {},
-  });
+  }>(
+    {
+      url: "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_status",
+    },
+    {
+      onError: () => {},
+    },
+  );
 
   const stations: BikeStationProps[] | undefined = useMemo(() => {
     if (!status || !information?.data?.stations) return undefined;
 
     return status.data.stations.map((station) => ({
       ...station,
-      device: Device.BIKE_STATION,
+      facility: Facility.BIKE_STATION,
       rating: 4,
+      status: station.status === "IN_SERVICE" ? true : false,
+      status_text: station.status,
       ...(information.data.stations.find(
         (info) => info.station_id === station.station_id,
       ) as StationInformationProps),
     }));
   }, [status, information]);
 
-  const refetch = useCallback(async (body: FormBody) => {
-    setFormBody(body);
-    setHasLoggedError(false);
-    await Promise.all([refetchInformation(), refetchStatus()]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const waterFountains: WaterFountainProp[] | undefined = useMemo(() => {
+    if (!waterFountainsResponse || !waterFountainsResponse?.features)
+      return undefined;
 
-  const lastUpdated = useMemo(() => {
-    return status && status.last_updated * 1000;
-  }, [status]);
+    return waterFountainsResponse.features.map((item) => ({
+      station_id: item.properties.asset_id,
+      name: item.properties.AssetName,
+      lat: item.geometry.coordinates[0][1],
+      lon: item.geometry.coordinates[0][0],
+      address: item.properties.address,
+      reason: item.properties.Reason,
+      type: item.properties.type.split(",").map((str) => str.trim()),
+      location: item.properties.location,
+      location_details: item.properties.location_details,
+      url: item.properties.url,
+      rating: 4,
+      status: item.properties.Status === "1" ? true : false,
+      status_text: item.properties.Status === "1" ? "IN_SERVICE" : "CLOSED",
+      facility: Facility.WATER_FOUNTAIN,
+    }));
+  }, [waterFountainsResponse]);
+
+  const refetch = useCallback(async () => {
+    setHasLoggedError(false);
+
+    const tasks = [];
+    if (queryParameters?.facility.includes(Facility.BIKE_STATION)) {
+      tasks.push(refetchInformation());
+      tasks.push(refetchStatus());
+    }
+
+    if (!queryParameters?.facility.includes(Facility.BIKE_STATION)) {
+      refetchInformation(undefined, { revalidate: false });
+      refetchStatus(undefined, { revalidate: false });
+    }
+
+    if (queryParameters?.facility.includes(Facility.WATER_FOUNTAIN)) {
+      refetchWaterFountains();
+    }
+
+    if (!queryParameters?.facility.includes(Facility.WATER_FOUNTAIN)) {
+      refetchWaterFountains(undefined, { revalidate: false });
+    }
+
+    await Promise.all(tasks);
+
+    setLastUpdated(new Date().getTime());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryParameters?.facility]);
 
   useEffect(() => {
-    if ((informationHasError || statusHasError) && !hasLoggedError) {
+    if (
+      (informationHasError || statusHasError || waterFountainsHasError) &&
+      !hasLoggedError
+    ) {
       setHasLoggedError(true);
-      onError(informationHasError || statusHasError, "", {} as never);
+      onError(
+        informationHasError || statusHasError || waterFountainsHasError,
+        "",
+        {} as never,
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [informationHasError, statusHasError]);
+  }, [informationHasError, statusHasError, waterFountainsHasError]);
 
   return {
-    formBody,
     lastUpdated,
     stations,
+    waterFountains,
     refetch,
     isLoading:
       isLoadingStatus ||
       isLoadingInformation ||
+      isLoadingWaterFountains ||
       isValidatingInformation ||
-      isValidatingStatus,
+      isValidatingStatus ||
+      isValidatingWaterFountains,
   };
 }
 

@@ -6,13 +6,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button, Tabs } from "@/components";
 import { IconDirection, IconCancel } from "@images/icons";
 import { useTranslations } from "next-intl";
-import Overview from "./Overview";
+import Overview from "./Overview/index";
 import Reviews from "./Reviews/index";
-import { BikeStationProps, GeolocationProps, useIsMobile } from "@/hooks";
+import {
+  BikeStationProps,
+  GeolocationProps,
+  useIsMobile,
+  WaterFountainProp,
+} from "@/hooks";
 
 export interface MarkerSidebarProps {
   visible?: boolean;
-  marker?: BikeStationProps;
+  marker?: BikeStationProps | WaterFountainProp;
   geolocation?: GeolocationProps;
   onCancel?: () => void;
 }

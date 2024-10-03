@@ -8,14 +8,18 @@ import {
 } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
-import { BikeStationProps } from "@/hooks";
+import { BikeStationProps, WaterFountainProp } from "@/hooks";
 
-export interface ReviewFormProps extends BikeStationProps {
+export interface ReviewFormProps {
   disclosure: UseDisclosureReturn;
 }
 
-const ReviewForm = ({ name, ...props }: ReviewFormProps) => {
+const ReviewForm = ({
+  name,
+  ...props
+}: ReviewFormProps & (BikeStationProps | WaterFountainProp)) => {
   const t = useTranslations();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);

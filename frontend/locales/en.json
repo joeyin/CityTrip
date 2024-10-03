@@ -1,12 +1,10 @@
 {
   "header": {
     "home": "Home",
-    "bike-stations": "Bike Station",
-    "water-fountains": "Water Fountain",
     "support": "Support",
     "signin/up": "SIGN IN/UP"
   },
-  "devices": {
+  "facility": {
     "bike-station": "Bike Station",
     "water-fountain": "Water Fountain"
   },
@@ -37,11 +35,12 @@
   "overview": "Overview",
   "reviews": "Reviews",
   "IN_SERVICE": "In Service",
+  "CLOSED": "Closed",
   "KEY": "Key",
   "TRANSITCARD": "Transit Card",
   "CREDITCARD": "Credit Card",
   "PHONE": "Phone",
-  "available-mechanical-bikes": "Available Mechanical Bikes",
+  "available-mechanical-bikes": "Available Regular Bikes",
   "rate-the-bike-station-at": "Rate the bike station at {text}",
   "star": "{text} Star",
   "cancel": "Cancel",
@@ -57,5 +56,7 @@
   "logout": "Logout",
   "open-account-dropdown": "Open account dropdown",
   "close": "Close",
-  "instant-filter": "Instant Filter"
+  "instant-filter": "Instant Filter",
+  "reason": "Reason",
+  "type": "Type"
 }

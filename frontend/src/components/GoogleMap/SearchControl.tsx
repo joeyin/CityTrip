@@ -1,22 +1,22 @@
 "use client";
 
 import React from "react";
-import { useGoogleMap, StandaloneSearchBox } from "@react-google-maps/api";
+import { StandaloneSearchBox, useGoogleMap } from "@react-google-maps/api";
 import { SelectItem } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { Device } from "@/constants";
+import { Facility } from "@/constants";
 import { AdvancedInput, AdvancedSelect, Button } from "@components";
 import { IconFilter, IconLocation } from "@images/icons";
 import moment from "moment";
 import cx from "classnames";
-import { FormBody } from "@/hooks";
+import { FormBody } from "@/providers/AppProvider";
 
 export interface LayerControlProps {
   className?: string;
   lastUpdated?: number;
   onSubmit?: (props: FormBody) => void;
   isLoading?: boolean;
-  formBody?: FormBody;
+  queryParameters?: FormBody;
 }
 
 const LayerControl = ({
@@ -24,15 +24,20 @@ const LayerControl = ({
   lastUpdated,
   onSubmit,
   isLoading,
-  formBody,
+  queryParameters,
 }: LayerControlProps) => {
-  const [place, setPlace] = React.useState<string>();
-  const [filter, setFilter] = React.useState<string[]>(formBody?.filter || []);
-
   const map: google.maps.Map | null = useGoogleMap();
+
+  const [place, setPlace] = React.useState<string>();
+
+  const [facility, setFacility] = React.useState<string[]>(
+    queryParameters?.facility || [],
+  );
+
   const placesSearchBoxRef = React.useRef<null | google.maps.places.SearchBox>(
     null,
   );
+
   const t = useTranslations();
 
   const onPlacesChanged = React.useCallback(() => {
@@ -46,7 +51,7 @@ const LayerControl = ({
       places[0]?.name
     ) {
       setPlace(places[0]?.name);
-      map?.setCenter(places[0]?.geometry?.location.toJSON());
+      map?.panTo(places[0]?.geometry?.location.toJSON());
     }
   }, []); //eslint-disable-line
 
@@ -67,9 +72,16 @@ const LayerControl = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) {
-      onSubmit({ filter });
+      onSubmit({
+        facility,
+        timestamp: new Date().getTime(),
+      });
     }
   };
+
+  React.useEffect(() => {
+    setFacility(queryParameters?.facility || []);
+  }, [queryParameters?.facility]);
 
   return (
     <form
@@ -114,18 +126,24 @@ const LayerControl = ({
 
       <AdvancedSelect
         multiple
+        required
+        isRequired
         name="filter"
         fullWidth
         radius="md"
         icon={<IconFilter />}
         label={t("filter")}
         selectionMode="multiple"
-        onChange={(e) => setFilter(e.target.value.split(","))}
-        defaultSelectedKeys={filter}
+        onChange={(e) => {
+          const value = e.target.value;
+          setFacility(value ? value.split(",") : []);
+        }}
+        selectedKeys={facility}
+        defaultSelectedKeys={facility}
       >
-        {Object.keys(Device).map((item) => (
-          <SelectItem key={Device[item as keyof typeof Device]}>
-            {t(`devices.${Device[item as keyof typeof Device]}`)}
+        {Object.keys(Facility).map((item) => (
+          <SelectItem key={Facility[item as keyof typeof Facility]}>
+            {t(`facility.${Facility[item as keyof typeof Facility]}`)}
           </SelectItem>
         ))}
       </AdvancedSelect>

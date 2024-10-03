@@ -24,7 +24,7 @@ const BikeStationMarker = ({
 
   const position = React.useMemo(
     () => new google.maps.LatLng(props.lat, props.lon),
-    [], //eslint-disable-line
+    [] //eslint-disable-line
   );
 
   return (
@@ -36,11 +36,11 @@ const BikeStationMarker = ({
         <Button
           title={props.name}
           disableRipple={props.active}
+          data-active={props.active}
           color="primary"
           radius="sm"
           onPress={handelClick}
           onClick={handelClick}
-          data-active={props.active}
           className={cx(
             "p-0",
             "gap-0",
@@ -55,11 +55,9 @@ const BikeStationMarker = ({
             "data-[active=true]:bg-warning",
             "font-arial",
             {
-              "bg-danger": !props.num_bikes_available,
-              // "opacity-75": !props.num_bikes_available,
+              "bg-danger": !props.num_bikes_available || !props.status,
             },
           )}
-          {...props}
         >
           <div className="h-full px-2 text-[13px] font-archivo font-light tracking-widest flex items-center justify-center flex-1 border-r-1 border-white border-opacity-10">
             <span>{props.num_bikes_available.toLocaleString()}</span>

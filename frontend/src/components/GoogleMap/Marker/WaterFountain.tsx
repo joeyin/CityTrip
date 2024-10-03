@@ -5,50 +5,63 @@ import {
   Marker as BaseMarker,
   OverlayView,
   OverlayViewF,
+  useGoogleMap,
 } from "@react-google-maps/api";
-import { IconWaterFountain } from "@images/icons";
-import { ButtonProps } from "@nextui-org/react";
+import { IconCup } from "@images/icons";
 import cx from "classnames";
 import { Button } from "@components";
-
-export interface MarkerProps extends ButtonProps {
-  position: google.maps.LatLng | google.maps.LatLngLiteral;
-  string?: string | undefined;
-  active?: boolean;
-}
+import { WaterFountainProp } from "@/hooks";
 
 const WaterFountainMarker = ({
-  title,
-  position,
-  active,
+  onPress = () => {},
   ...props
-}: MarkerProps) => {
+}: WaterFountainProp) => {
+  const map: google.maps.Map | null = useGoogleMap();
+  const handelClick = React.useCallback(() => {
+    onPress(props);
+    map?.panTo(new google.maps.LatLng(props.lat, props.lon));
+  }, []); //eslint-disable-line
+
+  const position = React.useMemo(
+    () => new google.maps.LatLng(props.lat, props.lon),
+    [] //eslint-disable-line
+  );
+
   return (
-    <BaseMarker title={title} position={position} opacity={0}>
+    <BaseMarker title={props.name} position={position} opacity={0}>
       <OverlayViewF
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
         position={position}
       >
         <Button
-          disableRipple={active}
-          color={active ? "warning" : "secondary"}
+          title={props.name}
+          disableRipple={props.active}
+          data-active={props.active}
+          color={props.active ? "warning" : "secondary"}
           radius="sm"
+          onPress={handelClick}
+          onClick={handelClick}
           className={cx(
-            "shadow-default",
             "p-0",
             "gap-0",
-            "data-[hover=true]:!opacity-100",
             "min-h-full",
             "min-w-full",
             "h-[29px]",
             "w-[30px]",
+            "data-[hover=true]:!opacity-100",
+            "data-[hover=true]:z-50",
+            "data-[hover=true]:scale-110",
+            "data-[hover=true]:bg-blue-400",
+            "data-[active=true]:z-40",
+            "data-[active=true]:bg-warning",
             "text-white",
-            { "data-[hover=true]:bg-blue-400": !active },
+            {
+              "bg-danger": !props.status,
+            },
           )}
-          {...props}
         >
           <div className="w-[30px] flex justify-center">
-            <IconWaterFountain className="w-[16px] h-[14px]" />
+            <IconCup className="w-[16px] h-[14px]" animation={props.active} />
           </div>
         </Button>
       </OverlayViewF>

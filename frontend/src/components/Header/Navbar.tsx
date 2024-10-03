@@ -19,6 +19,7 @@ import {
 import Logo from "@images/logo";
 import UserButton from "@components/Header/UserButton";
 import InstantFilter from "./InstantFilter";
+import { useApp } from "@/providers/AppProvider";
 
 export interface NavbarProps {
   menuItems: {
@@ -30,6 +31,7 @@ export interface NavbarProps {
 
 export default function Navbar({ menuItems }: NavbarProps) {
   const pathname = usePathname();
+  const { queryParameters, setQueryParameters } = useApp();
 
   // const langs = [
   //   {
@@ -135,7 +137,12 @@ export default function Navbar({ menuItems }: NavbarProps) {
             </Link>
           </NavbarItem>
         ))}
-        <InstantFilter />
+        {pathname === "/" && (
+          <InstantFilter
+            queryParameters={queryParameters}
+            onSubmit={setQueryParameters}
+          />
+        )}
         <UserButton />
       </NavbarContent>
 

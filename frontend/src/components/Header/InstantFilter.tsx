@@ -1,5 +1,4 @@
 import React from "react";
-import { StandaloneSearchBox } from "@react-google-maps/api";
 import {
   ModalContent,
   ModalHeader,
@@ -9,18 +8,39 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { AdvancedInput, AdvancedSelect, Button, Modal } from "@components";
-import { IconFilter, IconLocation } from "@images/icons";
-import { Device } from "@/constants";
+import { AdvancedSelect, Button, Modal } from "@components";
+import { IconFilter } from "@images/icons";
+import { Facility } from "@/constants";
 import { SelectItem } from "@nextui-org/react";
+import { FormBody } from "@/providers/AppProvider";
 
-const InstantFilter = () => {
+export interface InstantFilterProps {
+  onSubmit?: (props: FormBody) => void;
+  queryParameters?: FormBody;
+}
+
+const InstantFilter = ({ onSubmit, queryParameters }: InstantFilterProps) => {
   const t = useTranslations();
   const disclosure = useDisclosure();
 
+  const [facility, setFacility] = React.useState<string[]>(
+    queryParameters?.facility || [],
+  );
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (onSubmit) {
+      onSubmit({
+        facility,
+        timestamp: new Date().getTime(),
+      });
+    }
+    disclosure.onClose();
   };
+
+  React.useEffect(() => {
+    setFacility(queryParameters?.facility || []);
+  }, [queryParameters?.facility]);
 
   return (
     <>
@@ -50,40 +70,27 @@ const InstantFilter = () => {
               <ModalHeader>{t("instant-filter")}</ModalHeader>
               <form onSubmit={handleSubmit}>
                 <ModalBody>
-                  <div className="w-full">
-                    <StandaloneSearchBox
-                    // onLoad={onSearchBoxLoad}
-                    // onPlacesChanged={onPlacesChanged}
-                    >
-                      <AdvancedInput
-                        name="location"
-                        color="default"
-                        radius="md"
-                        icon={<IconLocation />}
-                        label={t("location")}
-                        placeholder={t("search-location")}
-                        // value={place || ""}
-                        isClearable
-                        // onChange={onChange}
-                        // onClear={() => setPlace("")}
-                        onKeyDown={() => {}}
-                      />
-                    </StandaloneSearchBox>
-                  </div>
                   <AdvancedSelect
                     multiple
+                    required
+                    isRequired
                     name="filter"
                     fullWidth
                     radius="md"
                     icon={<IconFilter />}
                     label={t("filter")}
                     selectionMode="multiple"
-                    // onChange={e => setFilter(e.target.value.split(","))}
-                    // defaultSelectedKeys={filter}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFacility(value ? value.split(",") : []);
+                    }}
+                    defaultSelectedKeys={facility}
                   >
-                    {Object.keys(Device).map((item) => (
-                      <SelectItem key={Device[item as keyof typeof Device]}>
-                        {t(`devices.${Device[item as keyof typeof Device]}`)}
+                    {Object.keys(Facility).map((item) => (
+                      <SelectItem key={Facility[item as keyof typeof Facility]}>
+                        {t(
+                          `facility.${Facility[item as keyof typeof Facility]}`,
+                        )}
                       </SelectItem>
                     ))}
                   </AdvancedSelect>

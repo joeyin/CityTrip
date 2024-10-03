@@ -4,6 +4,7 @@ import React from "react";
 import styled from "styled-components";
 import { GoogleMapProps as BaseGoogleMapProps } from ".";
 import BackControl from "./BackControl";
+import { useGoogleMap } from "@react-google-maps/api";
 
 const GoogleMap = ({
   children,
@@ -13,9 +14,11 @@ const GoogleMap = ({
     backControlOptions,
   } = {},
 }: BaseGoogleMapProps) => {
+  const map: google.maps.Map | null = useGoogleMap();
+
   return (
     <>
-      {children}
+      {typeof children === "function" ? children(map || undefined) : children}
       {gradientOverlay && (
         <StyledGradientOverlay className="absolute bottom-0 h-16 w-full" />
       )}

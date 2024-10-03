@@ -10,7 +10,7 @@ export { default as IconHome } from "./home";
 export { default as IconLocation } from "./location";
 export { default as IconLocationCrosshairs } from "./location-crosshairs";
 export { default as IconSupport } from "./support";
-export { default as IconWaterFountain } from "./water-fountain";
+export { default as IconCup } from "./cup";
 export { default as IconFilter } from "./filter";
 export { default as IconDirection } from "./direction";
 export { default as IconCancel } from "./cancel";

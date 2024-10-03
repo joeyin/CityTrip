@@ -1,1 +1,1 @@
-export { Device } from "./devices";
+export { Facility } from "./facility";

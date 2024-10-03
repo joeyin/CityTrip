@@ -3,9 +3,29 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { SWRConfig } from "swr";
 import { ToastContainer, toast } from "react-toastify";
-import { AppProvider } from "@/providers/AppProvider";
+import { AppProvider, FormBody } from "@/providers/AppProvider";
+
+type FetcherParams = {
+  url: string;
+  method?: "GET" | "POST";
+  body?: FormBody;
+};
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const fetcher = (
+    { url, method = "GET", body }: FetcherParams,
+    // init: BareFetcher
+  ) => {
+    if (method === "POST") {
+      return fetch(url, {
+        method: "POST",
+        body: JSON.stringify(body),
+      }).then((res) => res.json());
+    } else {
+      return fetch(url).then((res) => res.json());
+    }
+  };
+
   return (
     <SWRConfig
       value={{
@@ -14,8 +34,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         revalidateOnReconnect: false,
         shouldRetryOnError: false,
         refreshInterval: 0,
-        fetcher: (resource, init) =>
-          fetch(resource, init).then((res) => res.json()),
+        fetcher,
         onError: (err: Error) => {
           if (process.env.NODE_ENV === "development") {
             console.error(err);

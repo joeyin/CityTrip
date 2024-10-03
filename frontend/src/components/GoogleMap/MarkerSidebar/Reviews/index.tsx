@@ -4,15 +4,15 @@ import { Image, Skeleton, useDisclosure } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import useSWR from "swr";
-import { BikeStationProps } from "@/hooks";
+import { BikeStationProps, WaterFountainProp } from "@/hooks";
 import ReviewForm from "./Form";
 
-const Reviews = (props: BikeStationProps) => {
+const Reviews = (props: BikeStationProps | WaterFountainProp) => {
   const t = useTranslations();
   const disclosure = useDisclosure();
-  const { data, isLoading } = useSWR<{ name: string; body: string }[]>(
-    `https://jsonplaceholder.typicode.com/posts/100/comments#id=${props.station_id}`,
-  );
+  const { data, isLoading } = useSWR<{ name: string; body: string }[]>({
+    url: `https://jsonplaceholder.typicode.com/posts/100/comments#id=${props.station_id}`,
+  });
 
   return (
     <>

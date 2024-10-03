@@ -9,7 +9,7 @@ import {
 } from "@react-google-maps/api";
 import { ButtonProps } from "@nextui-org/react";
 import GoogleMapInner from "./GoogleMap";
-import { Device } from "@/constants";
+import { Facility } from "@/constants";
 import { BikeStationProps } from "@/hooks";
 
 export interface BaseGoogleMapOptionsProps extends google.maps.MapOptions {
@@ -18,13 +18,18 @@ export interface BaseGoogleMapOptionsProps extends google.maps.MapOptions {
   gradientOverlay?: boolean;
 }
 
-export interface GoogleMapProps extends Omit<BaseGoogleMapProps, "options"> {
+export interface GoogleMapProps
+  extends Omit<BaseGoogleMapProps, "options" | "children"> {
+  children:
+    | ((map?: google.maps.Map) => React.ReactNode)
+    | React.ReactNode
+    | undefined;
   options?: BaseGoogleMapOptionsProps | undefined;
   defaultCenter?: google.maps.LatLng | google.maps.LatLngLiteral | undefined;
 }
 
 export interface MarkerProps extends Omit<ButtonProps, "onClick"> {
-  device: Device;
+  facility: Facility;
   position: google.maps.LatLng | google.maps.LatLngLiteral;
   active?: boolean;
   onClick?: (props: MarkerProps | undefined) => void;

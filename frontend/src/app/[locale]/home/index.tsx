@@ -3,20 +3,27 @@
 import React from "react";
 import { GoogleMap, SearchControl, MarkerSidebar } from "@components/GoogleMap";
 import { toast } from "react-toastify";
-import { useGeolocationFn, useSearch, BikeStationProps } from "@/hooks";
+import {
+  useGeolocationFn,
+  useSearch,
+  BikeStationProps,
+  WaterFountainProp,
+  useIsFirstRender,
+} from "@/hooks";
 import Marker from "@/components/GoogleMap/Marker";
-import { Device } from "@/constants";
+import { useApp } from "@/providers/AppProvider";
 
 const Home = () => {
-  const { stations, lastUpdated, isLoading, refetch, formBody } = useSearch({
-    defaultFormBody: {
-      filter: [Device.BIKE_STATION, Device.WATER_FOUNTAIN],
-    },
-  });
+  const { queryParameters, setQueryParameters } = useApp();
 
-  const [active, setActive] = React.useState<undefined | BikeStationProps>(
-    undefined,
-  );
+  const isFirstRender = useIsFirstRender();
+
+  const { stations, waterFountains, lastUpdated, isLoading, refetch } =
+    useSearch();
+
+  const [active, setActive] = React.useState<
+    undefined | BikeStationProps | WaterFountainProp
+  >(undefined);
 
   const [geolocation, fetchCurrentLocation] = useGeolocationFn(
     {
@@ -57,6 +64,12 @@ const Home = () => {
     fetchCurrentLocation();
   }, []); //eslint-disable-line
 
+  React.useEffect(() => {
+    if (!isFirstRender) {
+      refetch();
+    }
+  }, [queryParameters]); //eslint-disable-line
+
   return (
     <GoogleMap
       onClick={() => setActive(undefined)}
@@ -82,15 +95,21 @@ const Home = () => {
         className="hidden md:flex"
         isLoading={isLoading}
         lastUpdated={lastUpdated}
-        formBody={formBody}
-        onSubmit={refetch}
+        queryParameters={queryParameters}
+        onSubmit={setQueryParameters}
       />
-      {stations?.map((i) => (
+      {[
+        ...(waterFountains ? waterFountains : []),
+        ...(stations ? stations : []),
+      ].map((i) => (
         <Marker
           {...i}
           key={i.station_id}
           onPress={setActive}
-          active={i.station_id === active?.station_id}
+          active={
+            i.facility === active?.facility &&
+            i.station_id === active?.station_id
+          }
         />
       ))}
       <MarkerSidebar
