@@ -16,7 +16,7 @@ const Reviews = (props: BikeStationProps | WaterFountainProp) => {
 
   return (
     <>
-      <ReviewForm disclosure={disclosure} {...props} />
+      {disclosure.isOpen && <ReviewForm disclosure={disclosure} {...props} />}
       <AnimatePresence>
         <motion.div
           initial={{ x: "-100%" }}

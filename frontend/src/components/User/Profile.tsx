@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Modal, Input } from "@/components";
-import { UserProps, useApp } from "@/providers/AppProvider";
+import { UserProps } from "@/providers/AppProvider";
 import {
   ModalContent,
   ModalHeader,
@@ -15,9 +15,8 @@ export interface ProfileFormProps {
   disclosure: UseDisclosureReturn;
 }
 
-const ProfileForm = ({ disclosure }: ProfileFormProps) => {
+const ProfileForm = ({ user, disclosure }: ProfileFormProps) => {
   const t = useTranslations();
-  const { user } = useApp();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);

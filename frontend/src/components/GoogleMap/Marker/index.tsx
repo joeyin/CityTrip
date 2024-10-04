@@ -2,14 +2,13 @@
 
 import React from "react";
 import { useGoogleMap } from "@react-google-maps/api";
-import { BikeStationProps, useIsMobile, WaterFountainProp } from "@/hooks";
+import { BikeStationProps, WaterFountainProp, useIsMobile } from "@/hooks";
 import { Facility } from "@/constants";
 import BikeStationMarker from "./BikeStation";
 import WaterFountainMarker from "./WaterFountain";
 
 const Marker = <T extends BikeStationProps | WaterFountainProp>(props: T) => {
   const isMobile = useIsMobile();
-
   const map: google.maps.Map | null = useGoogleMap();
 
   const pointOffset = (
@@ -40,10 +39,11 @@ const Marker = <T extends BikeStationProps | WaterFountainProp>(props: T) => {
     if (props.onPress) {
       props.onPress(props);
     }
+    const isMobileDevice = isMobile();
     const newPoint = pointOffset(
       new google.maps.LatLng(props.lat, props.lon),
-      isMobile ? 0 : -311 / 2,
-      isMobile ? (window.innerHeight - 64) / 1.5 / 2 : 0,
+      isMobileDevice ? 0 : -311 / 2,
+      isMobileDevice ? (window.innerHeight - 64) / 1.5 / 2 : 0,
     );
     if (newPoint) {
       map?.panTo(newPoint);

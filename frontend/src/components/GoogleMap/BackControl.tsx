@@ -21,4 +21,4 @@ const LayerControl = ({ isDisabled, isLoading, ...props }: ButtonProps) => {
   );
 };
 
-export default LayerControl;
+export default React.memo(LayerControl);

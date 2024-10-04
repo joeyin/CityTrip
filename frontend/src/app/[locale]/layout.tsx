@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { getMessages, unstable_setRequestLocale } from "next-intl/server";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Providers } from "./providers";
 
 import "./globals.css";
@@ -35,6 +35,9 @@ export default async function RootLayout({
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
       </body>
+      {process.env.NODE_ENV === "production" && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID!} />
+      )}
     </html>
   );
 }

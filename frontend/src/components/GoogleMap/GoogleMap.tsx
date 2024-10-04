@@ -15,7 +15,6 @@ const GoogleMap = ({
   } = {},
 }: BaseGoogleMapProps) => {
   const map: google.maps.Map | null = useGoogleMap();
-
   return (
     <>
       {typeof children === "function" ? children(map || undefined) : children}

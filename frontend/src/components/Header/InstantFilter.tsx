@@ -57,63 +57,68 @@ const InstantFilter = ({ onSubmit, queryParameters }: InstantFilterProps) => {
           <i className="fa-solid fa-magnifying-glass" />
         </Button>
       </NavbarItem>
-      <Modal
-        backdrop="blur"
-        size="sm"
-        variant="bordered"
-        radius="sm"
-        disclosure={disclosure}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>{t("instant-filter")}</ModalHeader>
-              <form onSubmit={handleSubmit}>
-                <ModalBody>
-                  <AdvancedSelect
-                    multiple
-                    required
-                    isRequired
-                    name="filter"
-                    fullWidth
-                    radius="md"
-                    icon={<IconFilter />}
-                    label={t("filter")}
-                    selectionMode="multiple"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setFacility(value ? value.split(",") : []);
-                    }}
-                    defaultSelectedKeys={facility}
-                  >
-                    {Object.keys(Facility).map((item) => (
-                      <SelectItem key={Facility[item as keyof typeof Facility]}>
-                        {t(
-                          `facility.${Facility[item as keyof typeof Facility]}`,
-                        )}
-                      </SelectItem>
-                    ))}
-                  </AdvancedSelect>
-                </ModalBody>
-                <ModalFooter className="gap-5">
-                  <Button
-                    variant="bordered"
-                    color="danger"
-                    radius="md"
-                    size="lg"
-                    onPress={onClose}
-                  >
-                    {t("cancel")}
-                  </Button>
-                  <Button type="submit" color="primary" radius="md" size="lg">
-                    {t("search")}
-                  </Button>
-                </ModalFooter>
-              </form>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+
+      {disclosure.isOpen && (
+        <Modal
+          backdrop="blur"
+          size="sm"
+          variant="bordered"
+          radius="sm"
+          disclosure={disclosure}
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader>{t("instant-filter")}</ModalHeader>
+                <form onSubmit={handleSubmit}>
+                  <ModalBody>
+                    <AdvancedSelect
+                      multiple
+                      required
+                      isRequired
+                      name="filter"
+                      fullWidth
+                      radius="md"
+                      icon={<IconFilter />}
+                      label={t("filter")}
+                      selectionMode="multiple"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setFacility(value ? value.split(",") : []);
+                      }}
+                      defaultSelectedKeys={facility}
+                    >
+                      {Object.keys(Facility).map((item) => (
+                        <SelectItem
+                          key={Facility[item as keyof typeof Facility]}
+                        >
+                          {t(
+                            `facility.${Facility[item as keyof typeof Facility]}`,
+                          )}
+                        </SelectItem>
+                      ))}
+                    </AdvancedSelect>
+                  </ModalBody>
+                  <ModalFooter className="gap-5">
+                    <Button
+                      variant="bordered"
+                      color="danger"
+                      radius="md"
+                      size="lg"
+                      onPress={onClose}
+                    >
+                      {t("cancel")}
+                    </Button>
+                    <Button type="submit" color="primary" radius="md" size="lg">
+                      {t("search")}
+                    </Button>
+                  </ModalFooter>
+                </form>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
     </>
   );
 };

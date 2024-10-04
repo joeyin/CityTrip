@@ -11,8 +11,8 @@ import Reviews from "./Reviews/index";
 import {
   BikeStationProps,
   GeolocationProps,
-  useIsMobile,
   WaterFountainProp,
+  useIsMobile,
 } from "@/hooks";
 
 export interface MarkerSidebarProps {
@@ -38,21 +38,14 @@ const MarkerSidebar = ({
     }
   }, [visible]);
 
-  const animation = React.useMemo(
-    () => ({
-      initial: isMobile ? { y: "100%" } : { x: "100%" },
-      animate: isMobile ? { y: 0 } : { x: 0 },
-      exit: isMobile ? { y: "100%" } : { x: "100%" },
-    }),
-    [isMobile],
-  );
-
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
           id="marker-sidebar"
-          {...animation}
+          initial={isMobile() ? { y: "100%" } : { x: "100%" }}
+          animate={isMobile() ? { y: 0 } : { x: 0 }}
+          exit={isMobile() ? { y: "100%" } : { x: "100%" }}
           transition={{ type: "spring", bounce: 0, duration: 0.6 }}
           className={cx(
             "fixed",

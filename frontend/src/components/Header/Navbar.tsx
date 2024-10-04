@@ -31,7 +31,7 @@ export interface NavbarProps {
 
 export default function Navbar({ menuItems }: NavbarProps) {
   const pathname = usePathname();
-  const { queryParameters, setQueryParameters } = useApp();
+  const { queryParameters, setQueryParameters, user, logout } = useApp();
 
   // const langs = [
   //   {
@@ -143,7 +143,7 @@ export default function Navbar({ menuItems }: NavbarProps) {
             onSubmit={setQueryParameters}
           />
         )}
-        <UserButton />
+        <UserButton user={user} logout={logout} />
       </NavbarContent>
 
       <NavbarMenu>

@@ -3,7 +3,7 @@
 import React from "react";
 import { useDisclosure, NavbarItem } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { useApp } from "@/providers/AppProvider";
+import { UserProps } from "@/providers/AppProvider";
 import {
   Dropdown,
   DropdownTrigger,
@@ -16,16 +16,23 @@ import AccountModal from "@/components/User/Account";
 import { IconUserFill } from "@images/icons";
 import { Button } from "@components";
 
-export default function UserButton() {
+const UserButton = ({
+  user,
+  logout,
+}: {
+  user: UserProps | null;
+  logout: () => void;
+}) => {
   const t = useTranslations();
-  const { user, logout } = useApp();
   const profileDisclosure = useDisclosure();
   const accountDisclosure = useDisclosure();
 
   if (user) {
     return (
       <NavbarItem className="px-0">
-        <ProfileModal user={user} disclosure={profileDisclosure} />
+        {profileDisclosure.isOpen && (
+          <ProfileModal user={user} disclosure={profileDisclosure} />
+        )}
         <Dropdown
           placement="bottom-end"
           radius="none"
@@ -96,7 +103,9 @@ export default function UserButton() {
 
   return (
     <NavbarItem>
-      <AccountModal disclosure={accountDisclosure} />
+      {accountDisclosure.isOpen && (
+        <AccountModal disclosure={accountDisclosure} />
+      )}
       <Button
         title={t("header.signin/up")}
         className="min-w-fit p-0 h-full w-[var(--navbar-height)] font-roboto text-sm font-bold sm:hidden text-gray-500"
@@ -118,4 +127,6 @@ export default function UserButton() {
       </Button>
     </NavbarItem>
   );
-}
+};
+
+export default React.memo(UserButton);
