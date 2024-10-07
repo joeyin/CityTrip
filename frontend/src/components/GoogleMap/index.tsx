@@ -26,6 +26,7 @@ export interface GoogleMapProps
     | undefined;
   options?: BaseGoogleMapOptionsProps | undefined;
   defaultCenter?: google.maps.LatLng | google.maps.LatLngLiteral | undefined;
+  defaultZoom?: number;
 }
 
 export interface MarkerProps extends Omit<ButtonProps, "onClick"> {

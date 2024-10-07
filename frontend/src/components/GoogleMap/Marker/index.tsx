@@ -60,4 +60,4 @@ const Marker = <T extends BikeStationProps | WaterFountainProp>(props: T) => {
   );
 };
 
-export default React.memo(Marker);
+export default Marker;

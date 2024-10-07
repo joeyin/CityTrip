@@ -3,6 +3,8 @@
 import React from "react";
 import { GoogleMap, SearchControl, MarkerSidebar } from "@components/GoogleMap";
 import { toast } from "react-toastify";
+import { MarkerClustererF } from "@react-google-maps/api";
+import { Clusterer, MarkerExtended } from "@react-google-maps/marker-clusterer";
 import {
   useGeolocationFn,
   useSearch,
@@ -14,6 +16,8 @@ import Marker from "@/components/GoogleMap/Marker";
 import { useApp } from "@/providers/AppProvider";
 
 const Home = () => {
+  const markersClustererRef = React.useRef<Clusterer | undefined>();
+
   const { queryParameters, setQueryParameters } = useApp();
 
   const isFirstRender = useIsFirstRender();
@@ -29,6 +33,7 @@ const Home = () => {
     {
       timeout: 3500, // Set a timeout to reject the promise if it takes more than 3.5 seconds
     },
+    () => {},
     (err) => {
       if (process.env.NODE_ENV === "development") {
         console.error(err);
@@ -45,7 +50,15 @@ const Home = () => {
       lat: parseFloat(process.env.NEXT_PUBLIC_GOOGLE_MAPS_DEFAULT_LAT!),
       lng: parseFloat(process.env.NEXT_PUBLIC_GOOGLE_MAPS_DEFAULT_LON!),
     }),
-    [] //eslint-disable-line
+      [] //eslint-disable-line
+  );
+
+  const markers = React.useMemo(
+    () => [
+      ...(waterFountains ? waterFountains : []),
+      ...(stations ? stations : []),
+    ],
+    [waterFountains, stations],
   );
 
   const mapCenter: google.maps.LatLng | google.maps.LatLngLiteral | undefined =
@@ -57,8 +70,45 @@ const Home = () => {
               lng: geolocation.longitude,
             }
           : undefined,
-      [geolocation.timestamp, geolocation.latitude, geolocation.longitude] //eslint-disable-line
+      [geolocation.timestamp] //eslint-disable-line
     );
+
+  const handleClusteringBegin = React.useCallback(
+    (markerClusterer: Clusterer) => {
+      markerClusterer.markers.map((marker) => {
+        marker.setVisible(false);
+      });
+    },
+    [],
+  );
+
+  const handleClusteringEnd = React.useCallback(
+    (markerClusterer: Clusterer) => {
+      markerClusterer.clusters.map((cluster) => {
+        const currentMarkers = cluster.getMarkers();
+        if (currentMarkers.length === 1) {
+          const notClusteredMarker = currentMarkers[0];
+          const notClusteredMarkerPosition = notClusteredMarker.getPosition();
+          currentMarkers.forEach((marker: MarkerExtended) => {
+            if (
+              marker &&
+              marker.getPosition()?.lat() ==
+                notClusteredMarkerPosition?.lat() &&
+              marker.getPosition()?.lng() == notClusteredMarkerPosition?.lng()
+            ) {
+              const facility = markers.find(
+                (i) => i.name === marker.getTitle(),
+              )?.facility;
+              if (facility && queryParameters?.facility.includes(facility)) {
+                marker.setVisible(true);
+              }
+            }
+          });
+        }
+      });
+    },
+    [markers, queryParameters],
+  );
 
   React.useEffect(() => {
     fetchCurrentLocation();
@@ -69,6 +119,10 @@ const Home = () => {
       refetch();
     }
   }, [queryParameters]); //eslint-disable-line
+
+  React.useEffect(() => {
+    markersClustererRef.current?.repaint();
+  }, [markers]); //eslint-disable-line
 
   return (
     <GoogleMap
@@ -98,20 +152,36 @@ const Home = () => {
         queryParameters={queryParameters}
         onSubmit={setQueryParameters}
       />
-      {[
-        ...(waterFountains ? waterFountains : []),
-        ...(stations ? stations : []),
-      ].map((i) => (
-        <Marker
-          {...i}
-          key={i.station_id}
-          onPress={setActive}
-          active={
-            i.facility === active?.facility &&
-            i.station_id === active?.station_id
-          }
-        />
-      ))}
+      <MarkerClustererF
+        gridSize={50}
+        minimumClusterSize={20}
+        clusterClass="map-cluster [&>*]:!text-[#fff] [&>*]:!font-roboto"
+        onLoad={(markerClusterer) =>
+          (markersClustererRef.current = markerClusterer)
+        }
+        averageCenter={true}
+        enableRetinaIcons={false}
+        onClusteringBegin={handleClusteringBegin}
+        onClusteringEnd={handleClusteringEnd}
+        onUnmount={(clusterer) => clusterer.clearMarkers()}
+      >
+        {(clusterer) => (
+          <>
+            {markers.map((i) => (
+              <Marker
+                {...i}
+                clusterer={clusterer}
+                key={i.station_id}
+                onPress={setActive}
+                active={
+                  i.facility === active?.facility &&
+                  i.station_id === active?.station_id
+                }
+              />
+            ))}
+          </>
+        )}
+      </MarkerClustererF>
       <MarkerSidebar
         geolocation={geolocation}
         visible={active !== undefined}

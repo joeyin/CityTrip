@@ -3,6 +3,7 @@
 import { Facility } from "@/constants";
 import { useApp } from "@/providers/AppProvider";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
+import { Clusterer } from "@react-google-maps/marker-clusterer";
 import useSWR, { useSWRConfig } from "swr";
 
 export interface GeolocationProps {
@@ -65,6 +66,7 @@ export interface BikeStationProps
   facility: Facility;
   status: boolean;
   status_text: string;
+  clusterer?: Clusterer;
 }
 
 export interface WaterFountainResProp {
@@ -108,6 +110,7 @@ export interface WaterFountainProp {
   onPress?: (props: WaterFountainProp | BikeStationProps) => void;
   rating?: number;
   facility: Facility;
+  clusterer?: Clusterer;
 }
 
 export enum RentalMethod {
@@ -121,6 +124,7 @@ export function useGeolocationFn(
   options: PositionOptions = {
     timeout: 10000,
   },
+  onSuccess: (coords: GeolocationCoordinates, timestamp: number) => void,
   onError: (error: GeolocationPositionError | Error | null) => void = () => {},
 ): [GeolocationProps, () => void] {
   const [state, setState] = useState<GeolocationProps>({
@@ -169,6 +173,9 @@ export function useGeolocationFn(
           speed: coords.speed,
           error: null,
         });
+        if (onSuccess) {
+          onSuccess(coords, timestamp);
+        }
       },
       (error) => {
         clearTimeout(timeoutId);
@@ -304,6 +311,7 @@ export function useSearch(): {
     setHasLoggedError(false);
 
     const tasks = [];
+
     if (queryParameters?.facility.includes(Facility.BIKE_STATION)) {
       tasks.push(refetchInformation());
       tasks.push(refetchStatus());
@@ -315,7 +323,7 @@ export function useSearch(): {
     }
 
     if (queryParameters?.facility.includes(Facility.WATER_FOUNTAIN)) {
-      refetchWaterFountains();
+      tasks.push(refetchWaterFountains());
     }
 
     if (!queryParameters?.facility.includes(Facility.WATER_FOUNTAIN)) {
