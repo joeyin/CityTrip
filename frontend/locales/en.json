@@ -63,5 +63,27 @@
   "Drinking Fountain": "Drinking Fountain",
   "Bottle Filling Station": "Bottle Filling Station",
   "Dog Fountain": "Dog Fountain",
-  "Water Tap": "Water Tap"
+  "Water Tap": "Water Tap",
+  "FAQs": {
+    "Q1": {
+      "question": "Which areas are currently covered?",
+      "answer": "Currently, only the Toronto area is covered."
+    },
+    "Q2": {
+      "question": "Which facilities are currently available?",
+      "answer": "Currently, information about bike-sharing stations and water fountains is provided."
+    },
+    "Q3": {
+      "question": "Is the information updated in real-time?",
+      "answer": "The information about bike-sharing stations is updated in real-time, while the water fountain information is updated periodically."
+    },
+    "Q4": {
+      "question": "Is the service currently charged?",
+      "answer": "The service is currently free of charge."
+    },
+    "Q5": {
+      "question": "Will information for other areas be provided in the future?",
+      "answer": "There are plans to expand to other areas in the future, and it is currently under development."
+    }
+  }
 }

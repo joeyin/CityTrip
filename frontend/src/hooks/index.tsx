@@ -224,7 +224,7 @@ export function useSearch(): {
     type: string;
   }>(
     {
-      url: "drinking-fountains.json",
+      url: "https://good-series.com/CityTrip/drinking-fountains.json",
       method: "GET",
     },
     {

@@ -6,8 +6,6 @@ import { Accordion, AccordionItem } from "@nextui-org/react";
 
 export default function FAQs() {
   const t = useTranslations();
-  const defaultContent =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
   return (
     <div className="w-full max-w-xl p-6 mx-auto flex flex-col gap-6">
@@ -19,18 +17,25 @@ export default function FAQs() {
           className: "bg-blue-200",
         }}
         itemClasses={{
-          title: "text-white",
-          content: "text-white",
+          trigger: "p-3",
+          title: "font-medium",
+          content: "pl-3 py-4 text-white",
         }}
       >
-        <AccordionItem key="1" aria-label="Accordion 1" title="Accordion 1">
-          {defaultContent}
+        <AccordionItem key="1" title={t("FAQs.Q1.question")}>
+          {t("FAQs.Q1.answer")}
         </AccordionItem>
-        <AccordionItem key="2" aria-label="Accordion 2" title="Accordion 2">
-          {defaultContent}
+        <AccordionItem key="2" title={t("FAQs.Q2.question")}>
+          {t("FAQs.Q2.answer")}
         </AccordionItem>
-        <AccordionItem key="3" aria-label="Accordion 3" title="Accordion 3">
-          {defaultContent}
+        <AccordionItem key="3" title={t("FAQs.Q3.question")}>
+          {t("FAQs.Q3.answer")}
+        </AccordionItem>
+        <AccordionItem key="4" title={t("FAQs.Q4.question")}>
+          {t("FAQs.Q4.answer")}
+        </AccordionItem>
+        <AccordionItem key="5" title={t("FAQs.Q5.question")}>
+          {t("FAQs.Q5.answer")}
         </AccordionItem>
       </Accordion>
     </div>

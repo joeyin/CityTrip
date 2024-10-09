@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
   output: process.env.NODE_ENV === "production" ? "export" : "standalone",
   reactStrictMode: false,
+  // basePath: "/CityTrip",
   env: {
     app: "CityTrip",
   },
