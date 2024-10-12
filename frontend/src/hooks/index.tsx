@@ -4,7 +4,7 @@ import { Facility } from "@/constants";
 import { useApp } from "@/providers/AppProvider";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import { Clusterer } from "@react-google-maps/marker-clusterer";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR, { useSWRConfig, SWRResponse, SWRConfiguration } from "swr";
 
 export interface GeolocationProps {
   loading: boolean | null;
@@ -214,6 +214,29 @@ export function useSearch(): {
   const { queryParameters } = useApp();
 
   const {
+    error: ratingsHasError,
+    data: ratings,
+    isLoading: isLoadingRatings,
+    isValidating: isValidatingRatings,
+    mutate: refetchRatings,
+  } = useSWR<
+    {
+      facility_id: string;
+      average_rate: string;
+    }[]
+  >(
+    [
+      `${process.env.NEXT_PUBLIC_API_URL!}/ratings/`,
+      {
+        method: "GET",
+      },
+    ],
+    {
+      onError: () => {},
+    },
+  );
+
+  const {
     error: waterFountainsHasError,
     data: waterFountainsResponse,
     isLoading: isLoadingWaterFountains,
@@ -223,10 +246,12 @@ export function useSearch(): {
     features: WaterFountainResProp[];
     type: string;
   }>(
-    {
-      url: "https://good-series.com/CityTrip/drinking-fountains.json",
-      method: "GET",
-    },
+    [
+      "https://good-series.com/CityTrip/drinking-fountains.json",
+      {
+        method: "GET",
+      },
+    ],
     {
       onError: () => {},
     },
@@ -242,14 +267,9 @@ export function useSearch(): {
     last_updated: number;
     ttl: number;
     data: { stations: StationInformationProps[] };
-  }>(
-    {
-      url: "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information",
-    },
-    {
-      onError: () => {},
-    },
-  );
+  }>(["https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_information"], {
+    onError: () => {},
+  });
 
   const {
     error: statusHasError,
@@ -261,14 +281,9 @@ export function useSearch(): {
     last_updated: number;
     ttl: number;
     data: { stations: StationStatusProps[] };
-  }>(
-    {
-      url: "https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_status",
-    },
-    {
-      onError: () => {},
-    },
-  );
+  }>(["https://tor.publicbikesystem.net/ube/gbfs/v1/en/station_status"], {
+    onError: () => {},
+  });
 
   const stations: BikeStationProps[] | undefined = useMemo(() => {
     if (!status || !information?.data?.stations) return undefined;
@@ -276,14 +291,19 @@ export function useSearch(): {
     return status.data.stations.map((station) => ({
       ...station,
       facility: Facility.BIKE_STATION,
-      rating: 4,
+      rating: parseInt(
+        ratings?.filter(
+          (i) =>
+            i.facility_id === `${Facility.BIKE_STATION}-${station.station_id}`,
+        )?.[0]?.average_rate || "0",
+      ),
       status: station.status === "IN_SERVICE" ? true : false,
       status_text: station.status,
       ...(information.data.stations.find(
         (info) => info.station_id === station.station_id,
       ) as StationInformationProps),
     }));
-  }, [status, information]);
+  }, [status, information, ratings]);
 
   const waterFountains: WaterFountainProp[] | undefined = useMemo(() => {
     if (!waterFountainsResponse || !waterFountainsResponse?.features)
@@ -300,12 +320,18 @@ export function useSearch(): {
       location: item.properties.location,
       location_details: item.properties.location_details,
       url: item.properties.url,
-      rating: 4,
       status: item.properties.Status === "1" ? true : false,
       status_text: item.properties.Status === "1" ? "IN_SERVICE" : "CLOSED",
       facility: Facility.WATER_FOUNTAIN,
+      rating: parseInt(
+        ratings?.filter(
+          (i) =>
+            i.facility_id ===
+            `${Facility.WATER_FOUNTAIN}-${item.properties.asset_id}`,
+        )?.[0]?.average_rate || "0",
+      ),
     }));
-  }, [waterFountainsResponse]);
+  }, [waterFountainsResponse, ratings]);
 
   const refetch = useCallback(async () => {
     setHasLoggedError(false);
@@ -327,8 +353,10 @@ export function useSearch(): {
     }
 
     if (!queryParameters?.facility.includes(Facility.WATER_FOUNTAIN)) {
-      refetchWaterFountains(undefined, { revalidate: false });
+      tasks.push(refetchWaterFountains(undefined, { revalidate: false }));
     }
+
+    tasks.push(refetchRatings());
 
     await Promise.all(tasks);
 
@@ -338,18 +366,29 @@ export function useSearch(): {
 
   useEffect(() => {
     if (
-      (informationHasError || statusHasError || waterFountainsHasError) &&
+      (informationHasError ||
+        statusHasError ||
+        waterFountainsHasError ||
+        ratingsHasError) &&
       !hasLoggedError
     ) {
       setHasLoggedError(true);
       onError(
-        informationHasError || statusHasError || waterFountainsHasError,
+        informationHasError ||
+          statusHasError ||
+          waterFountainsHasError ||
+          ratingsHasError,
         "",
         {} as never,
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [informationHasError, statusHasError, waterFountainsHasError]);
+  }, [
+    informationHasError,
+    statusHasError,
+    waterFountainsHasError,
+    ratingsHasError,
+  ]);
 
   return {
     lastUpdated,
@@ -357,11 +396,13 @@ export function useSearch(): {
     waterFountains,
     refetch,
     isLoading:
+      isLoadingRatings ||
       isLoadingStatus ||
       isLoadingInformation ||
       isLoadingWaterFountains ||
       isValidatingInformation ||
       isValidatingStatus ||
+      isValidatingRatings ||
       isValidatingWaterFountains,
   };
 }
@@ -379,4 +420,76 @@ export function useIsFirstRender() {
 
 export function useIsMobile() {
   return useCallback(() => window.innerWidth < 768, []);
+}
+
+export const setSessionStorageItem = (key: string, value: unknown) => {
+  const stringifiedValue = JSON.stringify(value);
+  if (typeof window !== "undefined") {
+    window.sessionStorage.setItem(key, stringifiedValue);
+  }
+};
+
+export const removeSessionStorageItem = (key: string) => {
+  if (typeof window !== "undefined") {
+    window.sessionStorage.removeItem(key);
+  }
+};
+
+export const getSessionStorageItem = (key: string) => {
+  let item = null;
+  if (typeof window !== "undefined") {
+    item = window.sessionStorage.getItem(key);
+  }
+  return item ? JSON.parse(item) : null;
+};
+
+interface AsyncFnProps<T> extends Omit<SWRResponse<T, unknown>, "mutate"> {
+  mutate: (options?: { [key: string]: FormDataEntryValue }) => void; // Method to trigger a refetch
+}
+
+export function useAsyncFn<T>(
+  url: string = "",
+  method: "GET" | "POST" = "GET",
+  initialBody: { [key: string]: FormDataEntryValue },
+  swrConfiguration?: SWRConfiguration,
+): AsyncFnProps<T> {
+  const isFirstRender = useRef(true);
+  const [requestBody, setRequestBody] =
+    useState<Record<string, unknown>>(initialBody);
+
+  const options = {
+    method,
+    body: requestBody,
+  };
+
+  const { mutate: refetch, ...props } = useSWR([url, options], null, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+    revalidateOnReconnect: false,
+    refreshWhenOffline: false,
+    refreshWhenHidden: false,
+    refreshInterval: 0,
+    revalidate: false,
+    ...swrConfiguration,
+  });
+
+  const mutate = useCallback(
+    (formBody?: { [key: string]: FormDataEntryValue }) => {
+      if (isFirstRender.current === true) {
+        isFirstRender.current = false;
+      }
+      setRequestBody((prevBody) => ({
+        ...prevBody,
+        ...formBody,
+        t: new Date().getTime(),
+      }));
+      if (!isFirstRender) {
+        refetch();
+      }
+  }, []); //eslint-disable-line
+
+  return {
+    ...props,
+    mutate,
+  };
 }

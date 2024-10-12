@@ -41,7 +41,7 @@
   "CREDITCARD": "Credit Card",
   "PHONE": "Phone",
   "available-mechanical-bikes": "Available Regular Bikes",
-  "rate-the-bike-station-at": "Rate the bike station at {text}",
+  "rate-the-facility": "Rate the {facility} at {text}",
   "star": "{text} Star",
   "cancel": "Cancel",
   "sign-in": "Sign In",
@@ -85,5 +85,8 @@
       "question": "Will information for other areas be provided in the future?",
       "answer": "There are plans to expand to other areas in the future, and it is currently under development."
     }
-  }
+  },
+  "loading": "Loading...",
+  "direction": "Direction",
+  "your location": "Your Location"
 }

@@ -28,6 +28,8 @@ const Rate = ({
 }: RatingProps) => {
   const t = useTranslations();
   const inputRef = React.useRef(null);
+
+  const [focused, setFocused] = React.useState(false);
   const [value, set] = React.useState(defaultValue.toString());
 
   React.useEffect(() => {
@@ -44,13 +46,21 @@ const Rate = ({
         value={value === "0" ? "" : value || undefined}
         required={required}
         labelPlacement="outside-left"
+        onFocusChange={setFocused}
         classNames={{
           label: "p-0",
           inputWrapper:
             "w-[0px] h-[0px] min-h-[0px] p-0 !ring-0 !ring-offset-0",
         }}
       />
-      <div className="flex gap-1">
+      <div
+        className={cx("inline-flex", "gap-1", {
+          outline: focused,
+          "outline-2": focused,
+          "outline-focus": focused,
+          "outline-offset-2": focused,
+        })}
+      >
         {Array.from({ length: maxValue }).map((_, index) => (
           <Button
             isDisabled={isDisabled}

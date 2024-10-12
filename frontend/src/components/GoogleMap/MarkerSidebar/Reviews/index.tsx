@@ -6,17 +6,30 @@ import { AnimatePresence, motion } from "framer-motion";
 import useSWR from "swr";
 import { BikeStationProps, WaterFountainProp } from "@/hooks";
 import ReviewForm from "./Form";
+import moment from "moment";
+import { UserProps } from "@/providers/AppProvider";
 
 const Reviews = (props: BikeStationProps | WaterFountainProp) => {
   const t = useTranslations();
   const disclosure = useDisclosure();
-  const { data, isLoading } = useSWR<{ name: string; body: string }[]>({
-    url: `https://jsonplaceholder.typicode.com/posts/100/comments#id=${props.station_id}`,
-  });
+
+  const time = React.useRef(new Date().getTime());
+
+  const { data, isLoading, mutate } = useSWR<{
+    reviews: {
+      created_at: string;
+      comments: string;
+      user: UserProps;
+    }[];
+  }>([
+    `${process.env.NEXT_PUBLIC_API_URL!}/reviews/${props.facility}-${props.station_id}?t=${time.current}`,
+  ]);
 
   return (
     <>
-      {disclosure.isOpen && <ReviewForm disclosure={disclosure} {...props} />}
+      {disclosure.isOpen && (
+        <ReviewForm refetch={mutate} disclosure={disclosure} {...props} />
+      )}
       <AnimatePresence>
         <motion.div
           initial={{ x: "-100%" }}
@@ -59,7 +72,7 @@ const Reviews = (props: BikeStationProps | WaterFountainProp) => {
                     </div>
                   </div>
                 ))
-              : data?.map((item, index) => (
+              : data?.reviews?.map((item, index) => (
                   <div
                     key={index}
                     className="flex flex-col py-4 px-3.5 transition-all duration-500 hover:bg-gray-50"
@@ -75,15 +88,21 @@ const Reviews = (props: BikeStationProps | WaterFountainProp) => {
                           wrapper: "min-w-[42px] min-h-[42px]",
                           img: "object-cover border-2 border-primary",
                         }}
-                        src="https://images.unsplash.com/photo-1645378999496-33c8c2afe38d?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        src={item.user.avatar}
                         alt=""
                       />
                       <div className="flex flex-col font-inter gap-1">
-                        <div className="text-sm font-semibold">{item.name}</div>
-                        <div className="text-[12px] font-normal italic">
-                          September 24, 2024 17:21:26
+                        <div className="text-sm font-semibold">
+                          {item.user.name}
                         </div>
-                        <div className="text-xs font-light">{item.body}</div>
+                        <div className="text-[12px] font-normal italic">
+                          {moment(item.created_at).format(
+                            "MMMM D, YYYY h:mm:ss A",
+                          )}
+                        </div>
+                        <div className="text-xs font-light">
+                          {item.comments}
+                        </div>
                       </div>
                     </div>
                   </div>

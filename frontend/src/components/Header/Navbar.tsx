@@ -10,16 +10,18 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  // SelectItem,
+  SelectItem,
 } from "@nextui-org/react";
-import {
-  Link,
-  // Select
-} from "@components";
+import { Link, Select } from "@components";
 import Logo from "@images/logo";
-import UserButton from "@components/Header/UserButton";
 import InstantFilter from "./InstantFilter";
 import { useApp } from "@/providers/AppProvider";
+import dynamic from "next/dynamic";
+import { useLocale } from "next-intl";
+
+const UserButton = dynamic(() => import("./UserButton"), {
+  ssr: false,
+});
 
 export interface NavbarProps {
   menuItems: {
@@ -29,36 +31,30 @@ export interface NavbarProps {
   }[];
 }
 
+interface LocalProps {
+  key: string;
+  name: string;
+  label: string;
+}
+
 export default function Navbar({ menuItems }: NavbarProps) {
   const pathname = usePathname();
-  const { queryParameters, setQueryParameters, user, logout } = useApp();
+  const locale = useLocale();
 
-  // const langs = [
-  //   {
-  //     id: 1,
-  //     name: "Canada",
-  //     emoji: "🇨🇦",
-  //     locale: "en",
-  //     role: "CEO",
-  //     team: "Management",
-  //     status: "active",
-  //     age: "29",
-  //     avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/1.png",
-  //     email: "tony.reichert@example.com",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Taiwan",
-  //     emoji: "🇹🇼",
-  //     locale: "zh-tw",
-  //     role: "Tech Lead",
-  //     team: "Development",
-  //     status: "paused",
-  //     age: "25",
-  //     avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/1.png",
-  //     email: "zoey.lang@example.com",
-  //   },
-  // ];
+  const { queryParameters, setQueryParameters } = useApp();
+
+  const locales: LocalProps[] = [
+    {
+      key: "en",
+      name: "Canada",
+      label: "🇨🇦",
+    },
+    {
+      key: "zh-tw",
+      name: "Taiwan",
+      label: "🇹🇼",
+    },
+  ];
 
   return (
     <BaseNavbar
@@ -77,51 +73,43 @@ export default function Navbar({ menuItems }: NavbarProps) {
           </Link>
         </NavbarBrand>
 
-        {/* <Select
-          items={users}
-          className="max-w-[80px]"
-          variant="bordered"
-          radius="sm"
+        <Select
+          aria-label="Locales"
+          defaultSelectedKeys={[locale]}
+          className="w-[65px] hidden md:block"
+          variant="faded"
           classNames={{
             label: "group-data-[filled=true]:-translate-y-5",
+            trigger: "border-1 h-8 min-h-8 rounded-md",
+            listbox: "p-0",
+            base: "w-[65px] min-w-[65px] ",
+            innerWrapper: "w-fit ",
+            selectorIcon: "w-[15px] h-[15px]",
           }}
           listboxProps={{
             itemClasses: {
               base: [
-                "rounded-sm",
+                "rounded-none",
                 "text-default-500",
                 "transition-opacity",
-                // "data-[hover=true]:text-foreground",
-                // "data-[hover=true]:bg-default-100",
-                // "dark:data-[hover=true]:bg-default-50",
-                // "data-[selectable=true]:focus:bg-default-50",
-                // "data-[pressed=true]:opacity-70",
-                // "data-[focus-visible=true]:ring-default-500",
+                "px-3",
               ],
+              selectedIcon: "w-[12px] h-[12px]",
             },
           }}
           popoverProps={{
             classNames: {
               base: "before:bg-default-200",
-              content: "p-0 border-small border-divider bg-background",
+              content: "rounded-md w-[65px] p-0 overflow-hidden",
             },
           }}
-          renderValue={(items) => {
-            return items.map((item) => (
-              <div key={item.key} className="flex items-center gap-2">
-                {item.data.emoji}
-              </div>
-            ));
-          }}
         >
-          {(user) => (
-            <SelectItem key={user.id} textValue={user.name}>
-              <div className="flex gap-2 items-center">
-                {user.emoji}
-              </div>
+          {locales.map((locale) => (
+            <SelectItem href={`/${locale.key}${pathname}`} key={locale.key}>
+              {locale.label}
             </SelectItem>
-          )}
-        </Select> */}
+          ))}
+        </Select>
       </NavbarContent>
 
       <NavbarContent justify="end" className="gap-0">
@@ -143,7 +131,7 @@ export default function Navbar({ menuItems }: NavbarProps) {
             onSubmit={setQueryParameters}
           />
         )}
-        <UserButton user={user} logout={logout} />
+        <UserButton />
       </NavbarContent>
 
       <NavbarMenu>
@@ -160,6 +148,34 @@ export default function Navbar({ menuItems }: NavbarProps) {
             </Link>
           </NavbarMenuItem>
         ))}
+        <Select
+          aria-label="Locales"
+          defaultSelectedKeys={[locale]}
+          variant="faded"
+          className="w-[100px]"
+          color="default"
+          classNames={{
+            label: "group-data-[filled=true]:-translate-y-5",
+            trigger: "border-1 rounded-md",
+            listbox: "p-0",
+          }}
+          listboxProps={{
+            itemClasses: {
+              base: ["rounded-none", "text-default-500", "transition-opacity"],
+            },
+          }}
+          popoverProps={{
+            classNames: {
+              content: "rounded-md",
+            },
+          }}
+        >
+          {locales.map((locale) => (
+            <SelectItem href={`/${locale.key}${pathname}`} key={locale.key}>
+              {locale.label}
+            </SelectItem>
+          ))}
+        </Select>
       </NavbarMenu>
     </BaseNavbar>
   );

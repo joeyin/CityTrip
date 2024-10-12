@@ -4,11 +4,26 @@ import { Button, Input } from "@/components";
 import { ModalBody, ModalFooter } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 
-const SigninInner = ({ onClose }: { onClose: () => void }) => {
+const SigninInner = ({
+  signIn,
+  onClose,
+}: {
+  signIn: (form: { [k: string]: FormDataEntryValue }) => void;
+  onClose: () => void;
+}) => {
   const t = useTranslations();
 
+  const handleSignin = React.useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.target as HTMLFormElement);
+      signIn(Object.fromEntries(formData));
+    },
+    [] //eslint-disable-line
+  );
+
   return (
-    <form>
+    <form onSubmit={handleSignin}>
       <ModalBody>
         <Input
           name="email"
@@ -26,6 +41,7 @@ const SigninInner = ({ onClose }: { onClose: () => void }) => {
         />
         <Input
           name="password"
+          type="password"
           variant="bordered"
           radius="md"
           size="lg"
@@ -58,14 +74,16 @@ const SigninInner = ({ onClose }: { onClose: () => void }) => {
 };
 
 const Signin = ({
+  signIn,
   onClose,
   disableAnimation = true,
 }: {
+  signIn: (form: { [k: string]: FormDataEntryValue }) => void;
   onClose: () => void;
   disableAnimation: boolean;
 }) => {
   if (disableAnimation) {
-    return <SigninInner onClose={onClose} />;
+    return <SigninInner signIn={signIn} onClose={onClose} />;
   }
 
   return (
@@ -81,7 +99,7 @@ const Signin = ({
         transition={{ type: "spring", bounce: 0, duration: 0.3 }}
         className="right-0"
       >
-        <SigninInner onClose={onClose} />
+        <SigninInner signIn={signIn} onClose={onClose} />
       </motion.div>
     </AnimatePresence>
   );

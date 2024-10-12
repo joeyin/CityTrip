@@ -31,7 +31,7 @@ const Home = () => {
 
   const [geolocation, fetchCurrentLocation] = useGeolocationFn(
     {
-      timeout: 3500, // Set a timeout to reject the promise if it takes more than 3.5 seconds
+      timeout: 5000, // Set a timeout to reject the promise if it takes more than 5 seconds
     },
     () => {},
     (err) => {
@@ -153,8 +153,6 @@ const Home = () => {
         onSubmit={setQueryParameters}
       />
       <MarkerClustererF
-        gridSize={50}
-        minimumClusterSize={20}
         clusterClass="map-cluster [&>*]:!text-[#fff] [&>*]:!font-roboto"
         onLoad={(markerClusterer) =>
           (markersClustererRef.current = markerClusterer)

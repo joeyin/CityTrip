@@ -71,7 +71,7 @@ const MarkerSidebar = ({
               <Button
                 as="a"
                 shadow="none"
-                title="Direction"
+                title={t("direction")}
                 isIconOnly
                 isDisabled={!(geolocation?.latitude && geolocation?.longitude)}
                 radius="none"
@@ -112,7 +112,7 @@ const MarkerSidebar = ({
             </div>
             <Button
               shadow="none"
-              title="Close"
+              title={t("close")}
               isIconOnly
               radius="none"
               variant="light"

@@ -41,7 +41,7 @@
   "CREDITCARD": "信用卡",
   "PHONE": "電話",
   "available-mechanical-bikes": "可用傳統腳踏車",
-  "rate-the-bike-station-at": "評價此共享腳踏車站 {text}",
+  "rate-the-facility": "評價此 {facility} at {text}",
   "star": "{text} 顆星",
   "cancel": "取消",
   "sign-in": "登入",
@@ -85,5 +85,8 @@
       "question": "Will information for other areas be provided in the future?",
       "answer": "There are plans to expand to other areas in the future, and it is currently under development."
     }
-  }
+  },
+  "loading": "載入中...",
+  "direction": "導航",
+  "your location": "您的位置"
 }

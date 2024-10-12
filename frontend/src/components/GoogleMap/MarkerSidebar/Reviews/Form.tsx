@@ -8,22 +8,36 @@ import {
 } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
-import { BikeStationProps, WaterFountainProp } from "@/hooks";
+import { BikeStationProps, useAsyncFn, WaterFountainProp } from "@/hooks";
 
 export interface ReviewFormProps {
   disclosure: UseDisclosureReturn;
+  refetch: () => void;
 }
 
 const ReviewForm = ({
   name,
+  refetch,
   ...props
 }: ReviewFormProps & (BikeStationProps | WaterFountainProp)) => {
   const t = useTranslations();
 
+  const { mutate } = useAsyncFn(
+    `${process.env.NEXT_PUBLIC_API_URL!}/reviews/${props.facility}-${props.station_id}`,
+    "POST",
+    {},
+    {
+      onSuccess: () => {
+        props.disclosure.onClose();
+        refetch();
+      },
+    },
+  );
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    console.log(Object.fromEntries(formData));
+    mutate(Object.fromEntries(formData));
   };
 
   return (
@@ -38,13 +52,22 @@ const ReviewForm = ({
         {(onClose) => (
           <>
             <ModalHeader>
-              {t("rate-the-bike-station-at", { text: name })}
+              {t("rate-the-facility", {
+                facility: t(`facility.${props.facility}`),
+                text: name,
+              })}
             </ModalHeader>
             <form onSubmit={handleSubmit}>
               <ModalBody>
-                <Rate name="rating" label="Rating" size="lg" required />
+                <Rate
+                  name="rate"
+                  label={t("rating")}
+                  size="lg"
+                  required
+                  isRequired
+                />
                 <Textarea
-                  name="message"
+                  name="comments"
                   variant="bordered"
                   radius="md"
                   size="lg"

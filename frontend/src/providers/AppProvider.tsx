@@ -1,5 +1,6 @@
 import { Facility } from "@/constants";
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { getSessionStorageItem, setSessionStorageItem } from "@/hooks";
 
 export interface UserProps {
   name: string;
@@ -19,6 +20,7 @@ export interface AppContextType {
   logout: () => void;
   queryParameters?: FormBody;
   setQueryParameters: (body?: FormBody) => void;
+  setUser: (user: UserProps) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -35,12 +37,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // const [user, setUser] = useState<UserProps | null>(null);
-  const [user, setUser] = useState<UserProps | null>({
-    name: "Alexander, Johnson",
-    email: "test@demo.com",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  });
+  const [user, setUser] = useState<UserProps | null>(
+    getSessionStorageItem("user"),
+  );
+  // const [user, setUser] = useState<UserProps | null>({
+  //   name: "Alexander, Johnson",
+  //   email: "test@demo.com",
+  //   avatar:
+  //     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+  // });
 
   const [queryParameters, setQueryParameters] = useState<FormBody | undefined>({
     facility: [Facility.BIKE_STATION, Facility.WATER_FOUNTAIN],
@@ -48,11 +53,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
 
   const logout = React.useCallback(() => {
     setUser(null);
+    setSessionStorageItem("user", null);
   }, []);
 
   return (
     <AppContext.Provider
-      value={{ user, logout, queryParameters, setQueryParameters }}
+      value={{ user, logout, queryParameters, setQueryParameters, setUser }}
     >
       {children}
     </AppContext.Provider>

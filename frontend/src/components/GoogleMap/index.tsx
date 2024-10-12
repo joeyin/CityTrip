@@ -7,10 +7,11 @@ import {
   useJsApiLoader,
   Libraries,
 } from "@react-google-maps/api";
-import { ButtonProps } from "@nextui-org/react";
+import { ButtonProps, Spinner } from "@nextui-org/react";
 import GoogleMapInner from "./GoogleMap";
 import { Facility } from "@/constants";
 import { BikeStationProps } from "@/hooks";
+import { useTranslations } from "next-intl";
 
 export interface BaseGoogleMapOptionsProps extends google.maps.MapOptions {
   backControl?: boolean;
@@ -38,6 +39,8 @@ export interface MarkerProps extends Omit<ButtonProps, "onClick"> {
 }
 
 const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
+  const t = useTranslations();
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!,
@@ -51,7 +54,7 @@ const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
   if (!isLoaded) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
-        Loading
+        <Spinner label={t("loading")} color="primary" labelColor="primary" />
       </div>
     );
   }

@@ -18,7 +18,7 @@ export default function FAQs() {
         }}
         itemClasses={{
           trigger: "p-3",
-          title: "font-medium",
+          title: "font-medium text-white",
           content: "pl-3 py-4 text-white",
         }}
       >

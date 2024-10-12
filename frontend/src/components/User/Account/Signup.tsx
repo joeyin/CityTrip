@@ -4,11 +4,26 @@ import { Button, Input } from "@/components";
 import { ModalBody, ModalFooter } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 
-const SignupInner = ({ onClose }: { onClose: () => void }) => {
+const SignupInner = ({
+  signUp,
+  onClose,
+}: {
+  signUp: (form: { [k: string]: FormDataEntryValue }) => void;
+  onClose: () => void;
+}) => {
   const t = useTranslations();
 
+  const handleSignup = React.useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.target as HTMLFormElement);
+      signUp(Object.fromEntries(formData));
+    },
+    [] //eslint-disable-line
+  );
+
   return (
-    <form>
+    <form onSubmit={handleSignup}>
       <ModalBody>
         <Input
           name="name"
@@ -89,14 +104,16 @@ const SignupInner = ({ onClose }: { onClose: () => void }) => {
 };
 
 const Signup = ({
+  signUp,
   onClose,
   disableAnimation = true,
 }: {
+  signUp: (form: { [k: string]: FormDataEntryValue }) => void;
   onClose: () => void;
   disableAnimation: boolean;
 }) => {
   if (disableAnimation) {
-    return <SignupInner onClose={onClose} />;
+    return <SignupInner signUp={signUp} onClose={onClose} />;
   }
 
   return (
@@ -112,7 +129,7 @@ const Signup = ({
         transition={{ type: "spring", bounce: 0, duration: 0.3 }}
         className="right-0"
       >
-        <SignupInner onClose={onClose} />
+        <SignupInner signUp={signUp} onClose={onClose} />
       </motion.div>
     </AnimatePresence>
   );

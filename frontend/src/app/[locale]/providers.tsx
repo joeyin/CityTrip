@@ -3,27 +3,51 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { SWRConfig } from "swr";
 import { ToastContainer, toast } from "react-toastify";
-import { AppProvider, FormBody } from "@/providers/AppProvider";
+import { AppProvider } from "@/providers/AppProvider";
 
-type FetcherParams = {
-  url: string;
+interface RequestOptions {
   method?: "GET" | "POST";
-  body?: FormBody;
-};
+  headers?: Record<string, string>;
+  body?: { [key: string]: FormDataEntryValue };
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const fetcher = (
-    { url, method = "GET", body }: FetcherParams,
-    // init: BareFetcher
-  ) => {
-    if (method === "POST") {
-      return fetch(url, {
-        method: "POST",
-        body: JSON.stringify(body),
-      }).then((res) => res.json());
-    } else {
-      return fetch(url).then((res) => res.json());
+  const fetcher = async (resource: [string, RequestOptions]) => {
+    const [url, options = { method: "GET" }] = resource;
+    const headers: HeadersInit = {
+      Accept: "application/json",
+      ...(options?.headers || {}),
+    };
+    const formData = new FormData();
+    let body: BodyInit | null = null;
+    if (options?.body) {
+      for (const [key, value] of Object.entries(options.body)) {
+        formData.append(key, value);
+      }
+      body = formData;
     }
+    const response =
+      options?.method === "GET"
+        ? await fetch(url)
+        : await fetch(url, {
+            credentials: "include",
+            method: options?.method || "POST",
+            body,
+            headers,
+          });
+    if (!response.ok) {
+      const errorMessage = await response.json();
+      if (errorMessage?.errors) {
+        const firstErrorKey = Object.keys(errorMessage.errors)[0];
+        const firstErrorMessage = errorMessage.errors[firstErrorKey][0];
+        throw new Error(firstErrorMessage);
+      } else if (errorMessage?.messages) {
+        throw new Error(errorMessage.messages);
+      } else {
+        throw new Error("An unknown error occurred.");
+      }
+    }
+    return await response.json();
   };
 
   return (
@@ -34,13 +58,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
         revalidateOnReconnect: false,
         shouldRetryOnError: false,
         refreshInterval: 0,
-        fetcher,
         onError: (err: Error) => {
           if (process.env.NODE_ENV === "development") {
             console.error(err);
           }
           toast.error(err?.message || "Unknown error");
         },
+        fetcher,
       }}
     >
       <NextUIProvider>

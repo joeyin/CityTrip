@@ -9,18 +9,35 @@ import {
 } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
+import { useAsyncFn } from "@/hooks";
+import { toast } from "react-toastify";
 
 export interface ProfileFormProps {
   user: UserProps;
   disclosure: UseDisclosureReturn;
+  onSubmit: (user: UserProps) => void;
 }
 
-const ProfileForm = ({ user, disclosure }: ProfileFormProps) => {
+const ProfileForm = ({ user, disclosure, onSubmit }: ProfileFormProps) => {
   const t = useTranslations();
+
+  const { mutate } = useAsyncFn(
+    `${process.env.NEXT_PUBLIC_API_URL!}/profile`,
+    "POST",
+    {},
+    {
+      onSuccess: (result: UserProps) => {
+        disclosure.onClose();
+        onSubmit(result);
+        toast.success("Your account profile has been successfully updated!");
+      },
+    },
+  );
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    console.log(Object.fromEntries(formData));
+    mutate(Object.fromEntries(formData));
   };
 
   return (
@@ -51,6 +68,7 @@ const ProfileForm = ({ user, disclosure }: ProfileFormProps) => {
                   required
                   isRequired
                   autoComplete="off"
+                  defaultValue={user.name}
                 />
                 <Input
                   name="email"
@@ -80,8 +98,6 @@ const ProfileForm = ({ user, disclosure }: ProfileFormProps) => {
                   classNames={{
                     inputWrapper: "border border-gray-150",
                   }}
-                  required
-                  isRequired
                   autoComplete="off"
                 />
                 <Input
@@ -96,8 +112,6 @@ const ProfileForm = ({ user, disclosure }: ProfileFormProps) => {
                   classNames={{
                     inputWrapper: "border border-gray-150",
                   }}
-                  required
-                  isRequired
                   autoComplete="off"
                 />
               </ModalBody>

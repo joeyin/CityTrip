@@ -3,7 +3,7 @@
 import React from "react";
 import { useDisclosure, NavbarItem } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { UserProps } from "@/providers/AppProvider";
+import { setSessionStorageItem, useAsyncFn } from "@/hooks";
 import {
   Dropdown,
   DropdownTrigger,
@@ -15,34 +15,104 @@ import ProfileModal from "@/components/User/Profile";
 import AccountModal from "@/components/User/Account";
 import { IconUserFill } from "@images/icons";
 import { Button } from "@components";
+import { useApp, UserProps } from "@/providers/AppProvider";
+import { toast } from "react-toastify";
 
-const UserButton = ({
-  user,
-  logout,
-}: {
-  user: UserProps | null;
-  logout: () => void;
-}) => {
+const UserButton = () => {
   const t = useTranslations();
   const profileDisclosure = useDisclosure();
   const accountDisclosure = useDisclosure();
+
+  const { mutate: signIn } = useAsyncFn(
+    `${process.env.NEXT_PUBLIC_API_URL!}/user/login`,
+    "POST",
+    {},
+    {
+      onSuccess: (result: UserProps) => {
+        const profile = {
+          avatar: result.avatar,
+          name: result.name,
+          email: result.email,
+        };
+        setUser(profile);
+        setSessionStorageItem("user", profile);
+        accountDisclosure.onClose();
+      },
+    },
+  );
+
+  const { mutate: signUp } = useAsyncFn(
+    "http://localhost:8888/CityTrip/native/user/register.php",
+    "POST",
+    {},
+    {
+      onSuccess: () => {
+        accountDisclosure.onClose();
+        toast.success("Your account has been successfully created!");
+      },
+    },
+  );
+
+  const { mutate: signout } = useAsyncFn(
+    "http://localhost:8888/CityTrip/native/user/logout.php",
+    "POST",
+    {},
+  );
+
+  const { setUser, user, logout } = useApp();
+
+  const handleSignin = React.useCallback(
+    (form: { [k: string]: FormDataEntryValue }) => {
+      signIn(form);
+    },
+    [] //eslint-disable-line
+  );
+
+  const handleSignup = React.useCallback(
+    (form: { [k: string]: FormDataEntryValue }) => {
+      signUp(form);
+    },
+    [] //eslint-disable-line
+  );
+
+  const handleSignout = React.useCallback(
+    () => {
+      signout();
+      logout();
+    },
+    [] //eslint-disable-line
+  );
+
+  const handleUpdateProfile = React.useCallback((result: UserProps) => {
+    const profile = {
+      avatar: result.avatar,
+      name: result.name,
+      email: result.email,
+    };
+    setUser(profile);
+    setSessionStorageItem("user", profile);
+  }, []); //eslint-disable-line
 
   if (user) {
     return (
       <NavbarItem className="px-0">
         {profileDisclosure.isOpen && (
-          <ProfileModal user={user} disclosure={profileDisclosure} />
+          <ProfileModal
+            user={user}
+            disclosure={profileDisclosure}
+            onSubmit={handleUpdateProfile}
+          />
         )}
         <Dropdown
           placement="bottom-end"
           radius="none"
           classNames={{
             base: "p-0 translate-x-[12px] translate-y-[-7px] font-roboto",
-            content: "p-0 md:min-w-[235px] shadow-lg",
+            content: "p-0 md:min-w-[220px] shadow-lg",
             trigger: [
               "flex-row-reverse",
-              "md:min-w-[235px]",
-              "md:max-w-[235px]",
+              "md:min-w-[220px]",
+              "md:max-w-[220px]",
               "aria-expanded:scale-[1]",
               "aria-expanded:bg-gray-200",
               "hover:bg-gray-200",
@@ -62,12 +132,12 @@ const UserButton = ({
                 isBordered: true,
                 src: user.avatar,
                 classNames: {
-                  base: "ring-offset-0 ring-primary max-w-10 max-h-10 min-w-10 min-h-10",
+                  base: "ring-offset-0 ring-primary max-w-8 max-h-8 min-w-8 min-h-8",
                 },
               }}
               classNames={{
                 wrapper: "overflow-hidden hidden md:block",
-                name: "font-roboto text-primary text-base font-bold truncate w-full",
+                name: "block font-roboto text-primary text-base font-bold truncate w-full",
               }}
             />
           </DropdownTrigger>
@@ -92,7 +162,11 @@ const UserButton = ({
             >
               {t("profile")}
             </DropdownItem>
-            <DropdownItem key="logout" title={t("logout")} onPress={logout}>
+            <DropdownItem
+              key="logout"
+              title={t("logout")}
+              onPress={handleSignout}
+            >
               {t("logout")}
             </DropdownItem>
           </DropdownMenu>
@@ -104,7 +178,11 @@ const UserButton = ({
   return (
     <NavbarItem>
       {accountDisclosure.isOpen && (
-        <AccountModal disclosure={accountDisclosure} />
+        <AccountModal
+          disclosure={accountDisclosure}
+          signIn={handleSignin}
+          signUp={handleSignup}
+        />
       )}
       <Button
         title={t("header.signin/up")}

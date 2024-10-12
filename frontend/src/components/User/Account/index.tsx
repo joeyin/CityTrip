@@ -10,9 +10,11 @@ import Signup from "./Signup";
 
 export interface AccountModalProps {
   disclosure: UseDisclosureReturn;
+  signIn: (form: { [k: string]: FormDataEntryValue }) => void;
+  signUp: (form: { [k: string]: FormDataEntryValue }) => void;
 }
 
-const AccountModal = ({ disclosure }: AccountModalProps) => {
+const AccountModal = ({ signIn, signUp, disclosure }: AccountModalProps) => {
   const t = useTranslations();
   const [selectedKey, setSelectedKey] = React.useState<Key>("signin");
   const [disableAnimation, setDisableAnimation] = React.useState(true);
@@ -81,9 +83,17 @@ const AccountModal = ({ disclosure }: AccountModalProps) => {
               </Tabs>
             </ModalHeader>
             {selectedKey === "signup" ? (
-              <Signup onClose={onClose} disableAnimation={disableAnimation} />
+              <Signup
+                signUp={signUp}
+                onClose={onClose}
+                disableAnimation={disableAnimation}
+              />
             ) : (
-              <Signin onClose={onClose} disableAnimation={disableAnimation} />
+              <Signin
+                signIn={signIn}
+                onClose={onClose}
+                disableAnimation={disableAnimation}
+              />
             )}
           </>
         )}

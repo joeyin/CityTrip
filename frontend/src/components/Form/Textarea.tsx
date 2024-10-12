@@ -7,6 +7,10 @@ const Textarea = extendVariants(BaseTextarea, {
         label: "text-xs",
         value: "text-sm",
       },
+      lg: {
+        label: "text-sm",
+        value: "text-md",
+      },
     },
     radius: {
       sm: {
