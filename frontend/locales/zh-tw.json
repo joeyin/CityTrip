@@ -66,24 +66,24 @@
   "Water Tap": "水龍頭",
   "FAQs": {
     "Q1": {
-      "question": "Which areas are currently covered?",
-      "answer": "Currently, only the Toronto area is covered."
+      "question": "目前覆蓋哪些區域？",
+      "answer": "目前只覆蓋多倫多地區。"
     },
     "Q2": {
-      "question": "Which facilities are currently available?",
-      "answer": "Currently, information about bike-sharing stations and water fountains is provided."
+      "question": "目前可用的設施有哪些？",
+      "answer": "目前提供自行車共享站和飲水機的資訊。"
     },
     "Q3": {
-      "question": "Is the information updated in real-time?",
-      "answer": "The information about bike-sharing stations is updated in real-time, while the water fountain information is updated periodically."
+      "question": "資訊是否實時更新？",
+      "answer": "自行車共享站的資訊是實時更新的，而飲水機的資訊則是定期更新的。"
     },
     "Q4": {
-      "question": "Is the service currently charged?",
-      "answer": "The service is currently free of charge."
+      "question": "目前這項服務是否收費？",
+      "answer": "這項服務目前是免費的。"
     },
     "Q5": {
-      "question": "Will information for other areas be provided in the future?",
-      "answer": "There are plans to expand to other areas in the future, and it is currently under development."
+      "question": "未來會提供其他區域的資訊嗎？",
+      "answer": "目前正在開發中，未來有計劃擴展到其他區域。"
     }
   },
   "loading": "載入中...",
