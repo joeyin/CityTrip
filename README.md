@@ -40,6 +40,42 @@ type.
 5. Feedback and Support
   - Feedback mechanism for users to suggest improvements or report issues.
 
+## Screenshots
+
+**Home**
+
+<img src="./screenshots/home.png" width="680" alt="CityTrip - Home" />
+
+**Overview**
+
+<img src="./screenshots/detail.png" width="680" alt="CityTrip - Overview" />
+
+**Reviews**
+
+<img src="./screenshots/reviews.png" width="680" alt="CityTrip - Reviews" />
+
+**Support**
+
+<img src="./screenshots/support.png" width="680" alt="CityTrip - Support" />
+
+----
+
+**Home - Mobile**
+
+<img src="./screenshots/mobile/home.png" width="380" alt="CityTrip - Home" />
+
+**Overview - Mobile**
+
+<img src="./screenshots/mobile/overview.png" width="380" alt="CityTrip - Overview" />
+
+**Reviews - Mobile**
+
+<img src="./screenshots/mobile/reviews.png" width="380" alt="CityTrip - Reviews" />
+
+**Support - Mobile**
+
+<img src="./screenshots/mobile/support.png" width="380" alt="CityTrip - Support" />
+
 ## References
 
 Wireframe: https://www.figma.com/proto/GJ2NAVm6xiuGHe4bkeNrNl/CityTrip?node-id=4-2&node-type=frame&t=DQhUnosAlMdUAMAf-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1
