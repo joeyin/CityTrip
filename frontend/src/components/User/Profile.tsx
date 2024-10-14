@@ -22,7 +22,7 @@ const ProfileForm = ({ user, disclosure, onSubmit }: ProfileFormProps) => {
   const t = useTranslations();
 
   const { mutate } = useAsyncFn(
-    `${process.env.NEXT_PUBLIC_API_URL!}/profile`,
+    `${process.env.NEXT_PUBLIC_API_URL!}/user/profile`,
     "POST",
     {},
     {

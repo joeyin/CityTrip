@@ -22,7 +22,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       <Navbar menuItems={menuItems} />
       <main className="h-full">{children}</main>
     </div>

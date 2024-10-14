@@ -42,7 +42,7 @@ const UserButton = () => {
   );
 
   const { mutate: signUp } = useAsyncFn(
-    "http://localhost:8888/CityTrip/native/user/register.php",
+    `${process.env.NEXT_PUBLIC_API_URL!}/user/register`,
     "POST",
     {},
     {
@@ -54,7 +54,7 @@ const UserButton = () => {
   );
 
   const { mutate: signout } = useAsyncFn(
-    "http://localhost:8888/CityTrip/native/user/logout.php",
+    `${process.env.NEXT_PUBLIC_API_URL!}/user/logout`,
     "POST",
     {},
   );

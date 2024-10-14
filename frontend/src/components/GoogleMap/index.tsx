@@ -53,7 +53,7 @@ const GoogleMapWrapper = ({ children, ...props }: GoogleMapProps) => {
 
   if (!isLoaded) {
     return (
-      <div className="w-full h-screen flex justify-center items-center">
+      <div className="w-full h-dvh flex justify-center items-center">
         <Spinner label={t("loading")} color="primary" labelColor="primary" />
       </div>
     );

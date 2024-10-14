@@ -156,17 +156,27 @@ export default function Navbar({ menuItems }: NavbarProps) {
           color="default"
           classNames={{
             label: "group-data-[filled=true]:-translate-y-5",
-            trigger: "border-1 rounded-md",
+            trigger: "border-1 h-8 min-h-8 rounded-md",
             listbox: "p-0",
+            base: "w-[65px] min-w-[65px] ",
+            innerWrapper: "w-fit ",
+            selectorIcon: "w-[15px] h-[15px]",
           }}
           listboxProps={{
             itemClasses: {
-              base: ["rounded-none", "text-default-500", "transition-opacity"],
+              base: [
+                "rounded-none",
+                "text-default-500",
+                "transition-opacity",
+                "px-3",
+              ],
+              selectedIcon: "w-[12px] h-[12px]",
             },
           }}
           popoverProps={{
             classNames: {
-              content: "rounded-md",
+              base: "before:bg-default-200",
+              content: "rounded-md w-[65px] p-0 overflow-hidden",
             },
           }}
         >
