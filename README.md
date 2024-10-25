@@ -42,6 +42,8 @@ type.
 
 ## Screenshots
 
+### Desktop
+
 **Home**
 
 <img src="./screenshots/home.png" width="680" alt="CityTrip - Home" />
@@ -60,7 +62,7 @@ type.
 
 ----
 
-**Home - Mobile**
+### Mobile
 
 <img src="./screenshots/mobile/home.png" width="380" alt="CityTrip - Home" />
 
@@ -76,11 +78,15 @@ type.
 
 <img src="./screenshots/mobile/support.png" width="380" alt="CityTrip - Support" />
 
+## Setup
+- **Frontend Repository**: [CityTrip Frontend Setup](https://github.com/joeyin/CityTrip/tree/main/frontend#setup)
+- **Backend Repository**: [CityTrip Backend Setup](https://github.com/joeyin/CityTrip/tree/main/backend#setup)
+
 ## References
 
-Wireframe: https://www.figma.com/proto/GJ2NAVm6xiuGHe4bkeNrNl/CityTrip?node-id=4-2&node-type=frame&t=DQhUnosAlMdUAMAf-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1
+- **Wireframe**: [Figma Wireframe](https://www.figma.com/proto/GJ2NAVm6xiuGHe4bkeNrNl/CityTrip?node-id=4-2&node-type=frame&t=DQhUnosAlMdUAMAf-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1)
 
 ## Contributors
 
-* Designer: [joeyin](https://www.linkedin.com/in/chiweiyin/)
-* Developer: [joeyin](https://www.linkedin.com/in/chiweiyin/)
+- **Designer**: [Joeyin](https://www.linkedin.com/in/chiweiyin/)
+- **Developer**: [Joeyin](https://www.linkedin.com/in/chiweiyin/)
