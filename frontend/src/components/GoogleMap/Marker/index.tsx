@@ -48,7 +48,7 @@ const Marker = <T extends BikeStationProps | WaterFountainProp>(props: T) => {
     if (newPoint) {
       map?.panTo(newPoint);
     }
-  }, []); //eslint-disable-line
+  }, [props]); //eslint-disable-line
 
   return props.facility === Facility.BIKE_STATION ? (
     <BikeStationMarker {...(props as BikeStationProps)} onPress={handleClick} />

@@ -20,7 +20,7 @@ const WaterFountainMarker = (props: WaterFountainProp) => {
     if (props.onPress) {
       props.onPress(props);
     }
-  }, []); //eslint-disable-line
+  }, [props]); //eslint-disable-line
 
   const position = React.useMemo(
     () => new google.maps.LatLng(props.lat, props.lon),
